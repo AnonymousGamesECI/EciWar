@@ -1,14 +1,14 @@
 {
   "ver": "1.0.0",
-  "uuid": "6c1dab4c-11f5-445d-bab7-35f08fc9b9bb",
+  "uuid": "ece386f0-1264-4bbe-a52d-83aeaed9837c",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "subMetas": {
-    "sprite3": {
+    "redSoldier": {
       "ver": "1.0.3",
-      "uuid": "4d6a3bcc-5c31-4cd9-b2aa-cb0a3dbac913",
-      "rawTextureUuid": "6c1dab4c-11f5-445d-bab7-35f08fc9b9bb",
+      "uuid": "d7fb52fe-4cac-4717-b46a-82bc9615eb20",
+      "rawTextureUuid": "ece386f0-1264-4bbe-a52d-83aeaed9837c",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

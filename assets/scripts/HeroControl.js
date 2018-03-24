@@ -3,21 +3,15 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        id: null,
         speed: cc.v2(0, 0),
-        maxSpeed: cc.v2(2000, 2000),
-        gravity: -1000,
+        maxSpeed: cc.v2(400, 400),
         drag: 1000,
         direction: 0,
         directiony: 0,
-        jumpSpeed: 300,
-        pi: 3.141516,
+        jumpSpeed: 0,
         bullet: {
             default: null,
             type: cc.Node,
-        },
-        stompClient: {
-            default: null
         },
         player2: {
             default : null,
@@ -27,12 +21,16 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        this.stompClient = null;
+        this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
         cc.director.getCollisionManager().enabled = true;
         cc.director.getCollisionManager().enabledDebugDraw = true;
         var canvas = cc.find('Canvas');
         canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
+
         this.connectAndSubscribe();
+
         //add keyboard input listener to call turnLeft and turnRight
         cc.eventManager.addListener({
             event: cc.EventListener.KEYBOARD,
@@ -120,6 +118,7 @@ cc.Class({
         this.node.rotation = angle * (180/this.pi);
 
     },
+
     onCollisionEnter: function (other, self) {
         this.node.color = cc.Color.RED;
 
@@ -137,20 +136,20 @@ cc.Class({
         // forward x-axis, check whether collision on x-axis
         selfPreAabb.x = selfAabb.x;
         otherPreAabb.x = otherAabb.x;
-
+        console.log("col");
         if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
-            if (this.speed.x < 0 && (selfPreAabb.xMax > otherPreAabb.xMax)) {
-                this.node.x = otherPreAabb.xMax - this.node.parent.x;
+            if ((selfPreAabb.xMax > otherPreAabb.xMax)) {
+                //this.node.x = otherPreAabb.xMax - this.node.parent.x;
                 this.collisionX = -1;
             }
-            else if (this.speed.x > 0 && (selfPreAabb.xMin < otherPreAabb.xMin)) {
-                this.node.x = otherPreAabb.xMin - selfPreAabb.width - this.node.parent.x;
+            else if ((selfPreAabb.xMin < otherPreAabb.xMin)) {
+                //this.node.x = otherPreAabb.xMin - selfPreAabb.width - this.node.parent.x;
                 this.collisionX = 1;
             }
 
-            this.speed.x = 0;
+            //this.speed.x = 0;
             other.touchingX = true;
-            return;
+            //return;
         }
 
         // 3rd step
@@ -159,24 +158,25 @@ cc.Class({
         otherPreAabb.y = otherAabb.y;
 
         if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
-            if (this.speed.y < 0 && (selfPreAabb.yMax > otherPreAabb.yMax)) {
-                this.node.y = otherPreAabb.yMax - this.node.parent.y;
+            if ((selfPreAabb.yMax > otherPreAabb.yMax)) {
+                //this.node.y = otherPreAabb.yMax - this.node.parent.y;
                 //this.jumping = false;
                 this.collisionY = -1;
             }
-            else if (this.speed.y > 0 && (selfPreAabb.yMin < otherPreAabb.yMin)) {
-                this.node.y = otherPreAabb.yMin - selfPreAabb.height - this.node.parent.y;
+            else if ((selfPreAabb.yMin < otherPreAabb.yMin)) {
+
+                //this.node.y = otherPreAabb.yMin - selfPreAabb.height - this.node.parent.y;
                 this.collisionY = 1;
             }
             
-            this.speed.y = 0;
+            //this.speed.y = 0;
             other.touchingY = true;
-            return;
-        }    
+            //return;
+        }
         
     },
     
-    onCollisionStay: function (other, self) {
+    /*onCollisionStay: function (other, self) {
         if (this.collisionY === -1) {
             if (other.node.group === 'Platform') {
                 var motion = other.node.getComponent('PlatformMotion');
@@ -195,7 +195,7 @@ cc.Class({
             // offset = cc.pointApplyAffineTransform(offset, temp);
             // this.node.x += offset.x;
         }
-    },
+    },*/
     
     onCollisionExit: function (other) {
         this.touchingNumber --;
@@ -207,7 +207,7 @@ cc.Class({
             this.collisionX = 0;
             other.touchingX = false;
         }
-        else if (other.touchingY) {
+        if (other.touchingY) {
             other.touchingY = false;
             this.collisionY = 0;
             //this.jumping = true;
@@ -215,12 +215,7 @@ cc.Class({
     },
     
     update: function (dt) {
-        if (this.collisionY === 0) {
-            this.speed.y += this.gravity * dt;
-            if (Math.abs(this.speed.y) > this.maxSpeed.y) {
-                this.speed.y = this.speed.y > 0 ? this.maxSpeed.y : -this.maxSpeed.y;
-            }
-        }
+
 
         if (this.direction === 0) {
             if (this.speed.x > 0) {
@@ -260,12 +255,12 @@ cc.Class({
             this.stompClient.send("/topic/newpoint", {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
-        if (this.speed.x * this.collisionX > 0) {
+        /*if (this.speed.x * this.collisionX > 0) {
             this.speed.x = 0;
         }
         if (this.speed.y * this.collisionY > 0) {
             this.speed.y = 0;
-        }
+        }*/
 
         
         this.prePosition.x = this.node.x;
@@ -273,9 +268,30 @@ cc.Class({
 
         this.preStep.x = this.speed.x * dt;
         this.preStep.y = this.speed.y * dt;
-        
-        this.node.x += this.speed.x * dt;
-        this.node.y += this.speed.y * dt;
+        if(this.collisionY < 0){
+            if(this.speed.y>0){
+                this.node.y += this.speed.y * dt;
+            }
+        }else if(this.collisionY > 0){
+            if(this.speed.y<0){
+                this.node.y += this.speed.y * dt;
+            }
+        }else{
+            this.node.y += this.speed.y * dt;
+        }
+
+        if(this.collisionX < 0){
+            if(this.speed.x>0){
+                this.node.x += this.speed.x * dt;
+            }
+        }else if(this.collisionX > 0){
+            if(this.speed.x<0){
+                this.node.x += this.speed.x * dt;
+            }
+        }else{
+            this.node.x += this.speed.x * dt;
+        }
+
 
     },
 
