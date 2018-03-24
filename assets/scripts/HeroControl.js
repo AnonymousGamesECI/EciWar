@@ -13,10 +13,10 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
-        player2: {
+        /*player2: {
             default : null,
             type: cc.Node,
-        },
+        },*/
     },
 
     // use this for initialization
@@ -252,7 +252,7 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0){
-            this.stompClient.send("/topic/newpoint", {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
+            this.stompClient.send("/room/movement", {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
         /*if (this.speed.x * this.collisionX > 0) {
@@ -295,19 +295,28 @@ cc.Class({
 
     },
 
+
+
     onTouchBegan: function (event) {
 
-        var scene = cc.director.getScene();
+        
         var touchLoc = event.touch.getLocation();
+        this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y}));
+
+        
+        
+   
+
+    },
+
+    addBulletToScene: function (bulletEvent) {
+        var scene = cc.director.getScene();
         var bullet = cc.instantiate(this.bullet);
         bullet.position = this.node.position;
-        bullet.getComponent('Bullet').targetX = touchLoc.x - this.node.position.x;
-        bullet.getComponent('Bullet').targetY = touchLoc.y - this.node.position.y;
-        //bullet.src.targetX = touchLoc.y;
-        //cc.log("AAAAAAAA: " + touchLoc.x + "BBBBBBB: " + touchLoc.y);
+        bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - this.node.position.x;
+        bullet.getComponent('Bullet').targetY = bulletTouch.touchLocY - this.node.position.y;
         bullet.active = true;
         scene.addChild(bullet);
-
     },
 
     connectAndSubscribe: function(){
@@ -316,40 +325,22 @@ cc.Class({
         this.stompClient = Stomp.over(socket);
         //console.log(this.stompClient);
         var tempStompClient = this.stompClient;
-        var p2 = this.player2;
-        var idd = this.id;
+        //var p2 = this.player2;
+        //var idd = this.id;
         this.stompClient.connect({}, function (frame) {
                console.log('Connected: ' + frame);
-               var subscriptionPoint = tempStompClient.subscribe('/topic/newpoint', function (eventbody) {
-                    var obj = JSON.parse(eventbody.body);
-                    if(obj.id !== idd){
-                        //console.log("RECIEVED: " + obj);
-                        p2.position = obj.ps;
-                        p2.rotation = obj.rt;
-                    }
-
-                    //alert("jodeeeer");
-
-                /*var point = eventbody.body;
-                var theObject=JSON.parse(eventbody.body);
-                //alert(theObject);
-                addPointToCanvas(theObject);
+               var subscriptionPoint = tempStompClient.subscribe('/room/movement', function (eventbody) {
+                   var move = JSON.parse(eventbody.body);
+                   this.node.position = move.ps
+                   this.node.rotation = move.rt;
                });
-               console.log('Connected: ' + frame);
-                          subscriptionPolygon = stompClient.subscribe('/topic/newpolygon.' + number, function (eventbody) {
-                          var points = JSON.parse(eventbody.body);
-                          console.log("points: " + points);
-                          var ctx = canvas.getContext('2d');
-                          ctx.fillStyle="#000000";
-                          ctx.beginPath();
-                          ctx.moveTo(points[0].x, points[0].y);
-                          ctx.lineTo(points[1].x,points[1].y);
-                          ctx.lineTo(points[2].x, points[2].y);
-                          ctx.lineTo(points[3].x, points[3].y);
-                          ctx.lineTo(points[0].x, points[0].y);
-                          ctx.closePath();
-                          ctx.fill();*/
+
+               var subscriptionPoint = tempStompClient.subscribe('/room/newshot', function (eventbody) {
+                   var bulletEvent = JSON.parse(eventbody.body);
+                   this.addBulletToScene(bulletEvent);
+                   
                });
+               
         });
 
     }
