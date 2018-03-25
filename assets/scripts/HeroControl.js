@@ -28,6 +28,11 @@ cc.Class({
         cc.director.getCollisionManager().enabledDebugDraw = true;
         var canvas = cc.find('Canvas');
         canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
+		
+		
+		this.position = this.node.position;
+		this.rotation = this.node.rotation;
+		this.addBullet = this.addBulletToScene;
 
         this.connectAndSubscribe();
 
@@ -50,6 +55,9 @@ cc.Class({
         this.preStep = cc.v2();
 
         this.touchingNumber = 0;
+		
+		
+		
     },
 
     onEnable: function () {
@@ -301,20 +309,27 @@ cc.Class({
 
         
         var touchLoc = event.touch.getLocation();
-        this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y}));
+		//this.bullet = cc.instantiate(this.bullet);
+        //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
 
-        
+		cc.log(this.node.position);
+		
+		this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
         
    
 
     },
 
-    addBulletToScene: function (bulletEvent) {
+    addBulletToScene: function (bulletEvent,bullet) {
+		
         var scene = cc.director.getScene();
-        var bullet = cc.instantiate(this.bullet);
-        bullet.position = this.node.position;
-        bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - this.node.position.x;
-        bullet.getComponent('Bullet').targetY = bulletTouch.touchLocY - this.node.position.y;
+		
+		var bullet = cc.instantiate(bullet);
+        
+		
+		bullet.position = bulletEvent.position;
+		bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
+        bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
         bullet.active = true;
         scene.addChild(bullet);
     },
@@ -325,19 +340,26 @@ cc.Class({
         this.stompClient = Stomp.over(socket);
         //console.log(this.stompClient);
         var tempStompClient = this.stompClient;
+		
+		var position = this.position;
+		var rotation = this.rotation;
+		var addBullet = this.addBullet;
+		var bull = this.bullet;
+		//cc.log(addBullet);
+		
         //var p2 = this.player2;
         //var idd = this.id;
         this.stompClient.connect({}, function (frame) {
                console.log('Connected: ' + frame);
                var subscriptionPoint = tempStompClient.subscribe('/room/movement', function (eventbody) {
                    var move = JSON.parse(eventbody.body);
-                   this.node.position = move.ps
-                   this.node.rotation = move.rt;
+                   position = move.ps;
+                   rotation = move.rt;
                });
 
                var subscriptionPoint = tempStompClient.subscribe('/room/newshot', function (eventbody) {
                    var bulletEvent = JSON.parse(eventbody.body);
-                   this.addBulletToScene(bulletEvent);
+                   addBullet(bulletEvent,bull);
                    
                });
                
