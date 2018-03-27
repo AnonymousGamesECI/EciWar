@@ -26,7 +26,7 @@ cc.Class({
         this.id = Math.floor(Math.random()*10000000);
         cc.director.getCollisionManager().enabled = true;
         cc.director.getCollisionManager().enabledDebugDraw = true;
-        var canvas = cc.find('Canvas');
+        var canvas = cc.find('Camera');
         canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
 		
 		
