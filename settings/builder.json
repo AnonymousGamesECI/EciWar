@@ -3,6 +3,7 @@
   "appSecret": "",
   "encryptJs": true,
   "excludeScenes": [],
+  "fb-instant-games": {},
   "includeAnySDK": false,
   "includeSDKBox": false,
   "inlineSpriteFrames": true,
@@ -20,8 +21,11 @@
   },
   "packageName": "org.cocos2d.EciWar",
   "privateKey": "",
+  "qqplay": {
+    "orientation": "portrait"
+  },
   "renderMode": "0",
-  "startScene": "9596481b-248b-4c29-8e60-9afcf361ae72",
+  "startScene": "019dd846-c5bb-47ee-9bff-80c92d7bee49",
   "title": "EciWar",
   "webOrientation": "auto",
   "wechatgame": {
@@ -29,9 +33,5 @@
     "orientation": "portrait"
   },
   "xxteaKey": "2eb650a0-fe53-4b",
-  "zipCompressJs": true,
-  "qqplay": {
-    "orientation": "portrait"
-  },
-  "fb-instant-games": {}
+  "zipCompressJs": true
 }
