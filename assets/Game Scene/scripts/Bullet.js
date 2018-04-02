@@ -16,7 +16,10 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-        this.node.destroy();
+        if (other.node.name != "Kit"){
+            this.node.destroy();
+        }
+
     },
     // called every frame, uncomment this function to activate update callback
     update: function (dt) {

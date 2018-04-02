@@ -13,14 +13,20 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
-        /*player2: {
+        player2: {
             default : null,
             type: cc.Node,
-        },*/
+        },
+        healthBar: {
+            default : null,
+            type: cc.ProgressBar,
+        },
     },
 
     // use this for initialization
     onLoad: function () {
+        this.isDead = false;
+        this.health = 100;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
@@ -71,27 +77,29 @@ cc.Class({
     },
     
     onKeyPressed: function (keyCode, event) {
-        switch(keyCode) {
-            case cc.KEY.a:
-            case cc.KEY.left:
-                this.direction = -1;
-                break;
-            case cc.KEY.d:
-            case cc.KEY.right:
-                this.direction = 1;
-                break;
-            case cc.KEY.w:
-            case cc.KEY.up:
-                this.directiony = 1;
-                /*if (!this.jumping) {
-                    this.jumping = true;
-                    this.speed.y = this.jumpSpeed;    
-                }*/
-                break;
-            case cc.KEY.s:
-            case cc.KEY.down:
-                this.directiony = -1;
-                break;
+        if(!this.isDead){
+            switch(keyCode) {
+                case cc.KEY.a:
+                case cc.KEY.left:
+                    this.direction = -1;
+                    break;
+                case cc.KEY.d:
+                case cc.KEY.right:
+                    this.direction = 1;
+                    break;
+                case cc.KEY.w:
+                case cc.KEY.up:
+                    this.directiony = 1;
+                    /*if (!this.jumping) {
+                        this.jumping = true;
+                        this.speed.y = this.jumpSpeed;
+                    }*/
+                    break;
+                case cc.KEY.s:
+                case cc.KEY.down:
+                    this.directiony = -1;
+                    break;
+            }
         }
         //console.log("posx: " + this.node.position);
 
@@ -128,82 +136,73 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-        this.node.color = cc.Color.RED;
-
-        this.touchingNumber ++;
-        
-        // 1st step 
-        // get pre aabb, go back before collision
-        var otherAabb = other.world.aabb;
-        var otherPreAabb = other.world.preAabb.clone();
-
-        var selfAabb = self.world.aabb;
-        var selfPreAabb = self.world.preAabb.clone();
-
-        // 2nd step
-        // forward x-axis, check whether collision on x-axis
-        selfPreAabb.x = selfAabb.x;
-        otherPreAabb.x = otherAabb.x;
-        console.log("col");
-        if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
-            if ((selfPreAabb.xMax > otherPreAabb.xMax)) {
-                //this.node.x = otherPreAabb.xMax - this.node.parent.x;
-                this.collisionX = -1;
+        //console.log(this.healthBar.progress);
+        if(other.node.name == "Bullet"){
+            this.health -= 10;
+            this.healthBar.progress = this.health/100;
+            if(this.health <=0){
+                this.isDead = true;
+                this.node.color = cc.Color.RED;
             }
-            else if ((selfPreAabb.xMin < otherPreAabb.xMin)) {
-                //this.node.x = otherPreAabb.xMin - selfPreAabb.width - this.node.parent.x;
-                this.collisionX = 1;
-            }
+        }else if(other.node.name == "Wall"){
+            //this.healthBar.getComponent("ProgressBar").progress;
+            this.touchingNumber ++;
 
-            //this.speed.x = 0;
-            other.touchingX = true;
-            //return;
-        }
+            // 1st step
+            // get pre aabb, go back before collision
+            var otherAabb = other.world.aabb;
+            var otherPreAabb = other.world.preAabb.clone();
 
-        // 3rd step
-        // forward y-axis, check whether collision on y-axis
-        selfPreAabb.y = selfAabb.y;
-        otherPreAabb.y = otherAabb.y;
+            var selfAabb = self.world.aabb;
+            var selfPreAabb = self.world.preAabb.clone();
 
-        if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
-            if ((selfPreAabb.yMax > otherPreAabb.yMax)) {
-                //this.node.y = otherPreAabb.yMax - this.node.parent.y;
-                //this.jumping = false;
-                this.collisionY = -1;
-            }
-            else if ((selfPreAabb.yMin < otherPreAabb.yMin)) {
-
-                //this.node.y = otherPreAabb.yMin - selfPreAabb.height - this.node.parent.y;
-                this.collisionY = 1;
-            }
-            
-            //this.speed.y = 0;
-            other.touchingY = true;
-            //return;
-        }
-        
-    },
-    
-    /*onCollisionStay: function (other, self) {
-        if (this.collisionY === -1) {
-            if (other.node.group === 'Platform') {
-                var motion = other.node.getComponent('PlatformMotion');
-                if (motion) {
-                    this.node.x += motion._movedDiff;
+            // 2nd step
+            // forward x-axis, check whether collision on x-axis
+            selfPreAabb.x = selfAabb.x;
+            otherPreAabb.x = otherAabb.x;
+            console.log("col");
+            if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
+                if ((selfPreAabb.xMax > otherPreAabb.xMax)) {
+                    //this.node.x = otherPreAabb.xMax - this.node.parent.x;
+                    this.collisionX = -1;
                 }
+                else if ((selfPreAabb.xMin < otherPreAabb.xMin)) {
+                    //this.node.x = otherPreAabb.xMin - selfPreAabb.width - this.node.parent.x;
+                    this.collisionX = 1;
+                }
+
+                //this.speed.x = 0;
+                other.touchingX = true;
+                //return;
             }
 
-            // this.node.y = other.world.aabb.yMax;
+            // 3rd step
+            // forward y-axis, check whether collision on y-axis
+            selfPreAabb.y = selfAabb.y;
+            otherPreAabb.y = otherAabb.y;
 
-            // var offset = cc.v2(other.world.aabb.x - other.world.preAabb.x, 0);
-            
-            // var temp = cc.affineTransformClone(self.world.transform);
-            // temp.tx = temp.ty = 0;
-            
-            // offset = cc.pointApplyAffineTransform(offset, temp);
-            // this.node.x += offset.x;
+            if (cc.Intersection.rectRect(selfPreAabb, otherPreAabb)) {
+                if ((selfPreAabb.yMax > otherPreAabb.yMax)) {
+                    //this.node.y = otherPreAabb.yMax - this.node.parent.y;
+                    //this.jumping = false;
+                    this.collisionY = -1;
+                }
+                else if ((selfPreAabb.yMin < otherPreAabb.yMin)) {
+
+                    //this.node.y = otherPreAabb.yMin - selfPreAabb.height - this.node.parent.y;
+                    this.collisionY = 1;
+                }
+
+                //this.speed.y = 0;
+                other.touchingY = true;
+                //return;
+            }
+        }else if(other.node.name == "Kit"){
+            this.health += 30;
+            this.healthBar.progress = this.health/100;
         }
-    },*/
+    },
+
     
     onCollisionExit: function (other) {
         this.touchingNumber --;
@@ -224,9 +223,9 @@ cc.Class({
     
     update: function (dt) {
 
-
         if (this.direction === 0) {
             if (this.speed.x > 0) {
+
                 this.speed.x -= this.drag * dt;
                 if (this.speed.x <= 0) this.speed.x = 0;
             }
@@ -263,19 +262,6 @@ cc.Class({
             this.stompClient.send("/room/movement", {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
-        /*if (this.speed.x * this.collisionX > 0) {
-            this.speed.x = 0;
-        }
-        if (this.speed.y * this.collisionY > 0) {
-            this.speed.y = 0;
-        }*/
-
-        
-        this.prePosition.x = this.node.x;
-        this.prePosition.y = this.node.y;
-
-        this.preStep.x = this.speed.x * dt;
-        this.preStep.y = this.speed.y * dt;
         if(this.collisionY < 0){
             if(this.speed.y>0){
                 this.node.y += this.speed.y * dt;
@@ -307,15 +293,16 @@ cc.Class({
 
     onTouchBegan: function (event) {
 
-        
-        var touchLoc = event.touch.getLocation();
-		//this.bullet = cc.instantiate(this.bullet);
-        //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
+        if(!this.isDead){
+            var touchLoc = event.touch.getLocation();
+            //this.bullet = cc.instantiate(this.bullet);
+            //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
 
-		cc.log(this.node.position);
-		
-		this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
-        
+            cc.log(this.node.position);
+
+            this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
+
+        }
    
 
     },
@@ -325,9 +312,8 @@ cc.Class({
         var scene = cc.director.getScene();
 		
 		var bullet = cc.instantiate(bullet);
-        
-		
-		bullet.position = bulletEvent.position;
+		bullet.x = bulletEvent.position.x;
+		bullet.y = bulletEvent.position.y;
 		bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
         bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
         bullet.active = true;
@@ -347,14 +333,17 @@ cc.Class({
 		var bull = this.bullet;
 		//cc.log(addBullet);
 		
-        //var p2 = this.player2;
-        //var idd = this.id;
+        var p2 = this.player2;
+        var idd = this.id;
         this.stompClient.connect({}, function (frame) {
                console.log('Connected: ' + frame);
                var subscriptionPoint = tempStompClient.subscribe('/room/movement', function (eventbody) {
+
                    var move = JSON.parse(eventbody.body);
-                   position = move.ps;
-                   rotation = move.rt;
+                   if(idd != move.id ){
+                       p2.position = move.ps;
+                       p2.rotation = move.rt;
+                   }
                });
 
                var subscriptionPoint = tempStompClient.subscribe('/room/newshot', function (eventbody) {
