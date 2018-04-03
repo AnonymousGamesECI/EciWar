@@ -9,6 +9,8 @@ cc.Class({
         direction: 0,
         directiony: 0,
         jumpSpeed: 0,
+		health:0,
+		ammo:0,
         bullet: {
             default: null,
             type: cc.Node,
@@ -21,12 +23,18 @@ cc.Class({
             default : null,
             type: cc.ProgressBar,
         },
+		ammoBar:{
+			default: null,
+			type:cc.ProgressBar,
+		}
+
     },
 
     // use this for initialization
     onLoad: function () {
         this.isDead = false;
         this.health = 100;
+		this.ammo=0;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
@@ -200,7 +208,11 @@ cc.Class({
         }else if(other.node.name == "Kit"){
             this.health += 30;
             this.healthBar.progress = this.health/100;
-        }
+        }else if (other.node.name== "Ammo"){
+			this.ammo+=6;
+			this.ammoBar.progress = this.ammo/50;			
+		}
+		
     },
 
     
@@ -292,14 +304,16 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-
-        if(!this.isDead){
+		this.ammoBar.progress = this.ammo/50;
+		console.log(this.ammo);
+        if(!this.isDead && this.ammo>0){
+			this.ammo-=1;
             var touchLoc = event.touch.getLocation();
             //this.bullet = cc.instantiate(this.bullet);
             //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
 
             cc.log(this.node.position);
-
+			
             this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
 
         }
@@ -309,15 +323,17 @@ cc.Class({
 
     addBulletToScene: function (bulletEvent,bullet) {
 		
-        var scene = cc.director.getScene();
-		
-		var bullet = cc.instantiate(bullet);
-		bullet.x = bulletEvent.position.x;
-		bullet.y = bulletEvent.position.y;
-		bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
-        bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
-        bullet.active = true;
-        scene.addChild(bullet);
+			var scene = cc.director.getScene();
+
+			var bullet = cc.instantiate(bullet);
+			bullet.x = bulletEvent.position.x;
+			bullet.y = bulletEvent.position.y;
+			bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
+			bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
+			bullet.active = true;
+			scene.addChild(bullet);
+			
+			
     },
 
     connectAndSubscribe: function(){
