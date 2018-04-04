@@ -153,6 +153,7 @@ cc.Class({
             this.health -= 10;
             this.healthBar.progress = this.health/100;
             if(this.health <=0){
+                alert("HAS MUERTO!");
                 this.isDead = true;
                 this.node.color = cc.Color.RED;
             }
