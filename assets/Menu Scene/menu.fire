@@ -18,9 +18,6 @@
       },
       {
         "__id__": 4
-      },
-      {
-        "__id__": 27
       }
     ],
     "_tag": -1,
@@ -118,7 +115,7 @@
       "width": 960,
       "height": 640
     },
-    "_fitWidth": false,
+    "_fitWidth": true,
     "_fitHeight": true
   },
   {
@@ -143,13 +140,16 @@
       },
       {
         "__id__": 19
+      },
+      {
+        "__id__": 26
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 26
+        "__id__": 31
       }
     ],
     "_prefab": null,
@@ -381,7 +381,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "enterName",
+    "_name": "inputName",
     "_objFlags": 0,
     "_parent": {
       "__id__": 4
@@ -422,7 +422,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 480,
-      "y": 358
+      "y": 256
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -1015,34 +1015,18 @@
     "_atlas": null
   },
   {
-    "__type__": "a1ef8J/8lpINZUa6MX6yCNY",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 4
-    },
-    "_enabled": true,
-    "username": "",
-    "inputName": {
-      "__id__": 11
-    },
-    "sendButton": {
-      "__id__": 13
-    }
-  },
-  {
     "__type__": "cc.Node",
     "_name": "Room",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 1
+      "__id__": 4
     },
     "_children": [
       {
-        "__id__": 28
+        "__id__": 27
       },
       {
-        "__id__": 30
+        "__id__": 29
       }
     ],
     "_tag": -1,
@@ -1076,7 +1060,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 469,
-      "y": 258
+      "y": 351
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -1087,17 +1071,17 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "editbox",
+    "_name": "inputRoom",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 27
+      "__id__": 26
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 29
+        "__id__": 28
       }
     ],
     "_prefab": null,
@@ -1142,11 +1126,11 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 28
+      "__id__": 27
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_string": "",
+    "_string": "1",
     "_tabIndex": 0,
     "editingDidBegan": [],
     "textChanged": [],
@@ -1184,14 +1168,14 @@
     "_name": "label",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 27
+      "__id__": 26
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 31
+        "__id__": 30
       }
     ],
     "_prefab": null,
@@ -1236,7 +1220,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 30
+      "__id__": 29
     },
     "_enabled": true,
     "_useOriginalSize": false,
@@ -1252,5 +1236,25 @@
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 0
+  },
+  {
+    "__type__": "a1ef8J/8lpINZUa6MX6yCNY",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 4
+    },
+    "_enabled": true,
+    "username": null,
+    "inputName": {
+      "__id__": 11
+    },
+    "inputRoom": {
+      "__id__": 28
+    },
+    "sendButton": {
+      "__id__": 13
+    },
+    "room": null
   }
 ]

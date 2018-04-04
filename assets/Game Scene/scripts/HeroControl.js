@@ -26,6 +26,10 @@ cc.Class({
 		ammoBar:{
 			default: null,
 			type:cc.ProgressBar,
+		},
+		usernameLabel: {
+		    default: null,
+		    type: cc.Label,
 		}
 
     },
@@ -39,6 +43,10 @@ cc.Class({
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
+        //console.log(cc.find("form").getComponent("MenuController").username);
+        this.username = cc.find("form").getComponent("MenuController").username;
+        this.room = cc.find("form").getComponent("MenuController").room;
+        this.usernameLabel.string = this.username;
 
         cc.director.getCollisionManager().enabled = true;
         cc.director.getCollisionManager().enabledDebugDraw = false;
@@ -153,7 +161,7 @@ cc.Class({
             this.health -= 10;
             this.healthBar.progress = this.health/100;
             if(this.health <=0){
-                alert("HAS MUERTO!");
+                alert("You have died!");
                 this.isDead = true;
                 this.node.color = cc.Color.RED;
             }
@@ -165,7 +173,6 @@ cc.Class({
             // get pre aabb, go back before collision
             var otherAabb = other.world.aabb;
             var otherPreAabb = other.world.preAabb.clone();
-
             var selfAabb = self.world.aabb;
             var selfPreAabb = self.world.preAabb.clone();
 
@@ -280,7 +287,7 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0){
-            this.stompClient.send("/room/movement", {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
+            this.stompClient.send('/room.' + this.room + '/movement', {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
         if(this.collisionY < 0){
@@ -323,7 +330,7 @@ cc.Class({
 
             cc.log(this.node.position);
 			
-            this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
+            this.stompClient.send('/room.' + this.room + '/newshot', {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
 
         }
    
@@ -341,7 +348,7 @@ cc.Class({
 			bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
 			bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
 			bullet.getComponent('Bullet').idBullet = idd;
-            console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
+            //console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
 			bullet.active = true;
 			scene.addChild(bullet);
 			
@@ -363,9 +370,10 @@ cc.Class({
 		
         var p2 = this.player2;
         var idd = this.id;
+        var rm = this.room
         this.stompClient.connect({}, function (frame) {
                console.log('Connected: ' + frame);
-               var subscriptionPoint = tempStompClient.subscribe('/room/movement', function (eventbody) {
+               var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/movement', function (eventbody) {
 
                    var move = JSON.parse(eventbody.body);
                    if(idd != move.id ){
@@ -374,7 +382,7 @@ cc.Class({
                    }
                });
 
-               var subscriptionPoint = tempStompClient.subscribe('/room/newshot', function (eventbody) {
+               var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/newshot', function (eventbody) {
                    var bulletEvent = JSON.parse(eventbody.body);
                    addBullet(bulletEvent,bull,idd);
                    
