@@ -32,14 +32,16 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
+        //private variables declaration
         this.isDead = false;
         this.health = 100;
 		this.ammo=0;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
+
         cc.director.getCollisionManager().enabled = true;
-        cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDebugDraw = false;
         var canvas = cc.find('Camera');
         canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
 		
@@ -76,7 +78,7 @@ cc.Class({
 
     onEnable: function () {
         cc.director.getCollisionManager().enabled = true;
-        cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDebugDraw = false;
     },
 
     onDisable: function () {
@@ -145,7 +147,9 @@ cc.Class({
 
     onCollisionEnter: function (other, self) {
         //console.log(this.healthBar.progress);
-        if(other.node.name == "Bullet"){
+
+        if(other.node.name == "Bullet" ){
+            //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
             this.health -= 10;
             this.healthBar.progress = this.health/100;
             if(this.health <=0){
@@ -206,7 +210,11 @@ cc.Class({
                 //return;
             }
         }else if(other.node.name == "Kit"){
-            this.health += 30;
+            if(this.health >= 70){
+                this.health = 100;
+            }else{
+                this.health += 30;
+            }
             this.healthBar.progress = this.health/100;
         }else if (other.node.name== "Ammo"){
 			this.ammo+=6;
@@ -321,15 +329,18 @@ cc.Class({
 
     },
 
-    addBulletToScene: function (bulletEvent,bullet) {
+    addBulletToScene: function (bulletEvent,bullet, idd) {
 		
 			var scene = cc.director.getScene();
 
 			var bullet = cc.instantiate(bullet);
+
 			bullet.x = bulletEvent.position.x;
 			bullet.y = bulletEvent.position.y;
 			bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
 			bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
+			bullet.getComponent('Bullet').idBullet = idd;
+            console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
 			bullet.active = true;
 			scene.addChild(bullet);
 			
@@ -364,7 +375,7 @@ cc.Class({
 
                var subscriptionPoint = tempStompClient.subscribe('/room/newshot', function (eventbody) {
                    var bulletEvent = JSON.parse(eventbody.body);
-                   addBullet(bulletEvent,bull);
+                   addBullet(bulletEvent,bull,idd);
                    
                });
                

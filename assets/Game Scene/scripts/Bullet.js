@@ -4,7 +4,8 @@ cc.Class({
     properties: {
         speed: 2000,
         targetX: 0,
-        targetY: 0
+        targetY: 0,
+        idBullet: 0,
     },
 
     // use this for initialization
