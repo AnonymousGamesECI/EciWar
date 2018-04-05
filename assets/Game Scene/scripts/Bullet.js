@@ -6,6 +6,11 @@ cc.Class({
         targetX: 0,
         targetY: 0,
         idBullet: 0,
+		shooter: {
+            default: null,
+            type: cc.Node,
+        },
+		damage: 0,
     },
 
     // use this for initialization
@@ -17,7 +22,7 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-        if (other.node.name != "Kit"){
+        if (other.node.name != "Kit" && other.node.name != "Ammo"){
             this.node.destroy();
         }
 
@@ -31,4 +36,7 @@ cc.Class({
         this.node.y += this.speed * dt * Math.cos(angle);
         //this.node.x += this.speed *
     },
+
+
+	
 });

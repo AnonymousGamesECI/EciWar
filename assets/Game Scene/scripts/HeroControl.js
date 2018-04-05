@@ -39,7 +39,7 @@ cc.Class({
         //private variables declaration
         this.isDead = false;
         this.health = 100;
-		this.ammo=0;
+		this.ammo=10;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
@@ -158,13 +158,7 @@ cc.Class({
 
         if(other.node.name == "Bullet" ){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
-            this.health -= 10;
-            this.healthBar.progress = this.health/100;
-            if(this.health <=0){
-                alert("You have died!");
-                this.isDead = true;
-                this.node.color = cc.Color.RED;
-            }
+            this.onShootBegan(other);
         }else if(other.node.name == "Wall"){
             //this.healthBar.getComponent("ProgressBar").progress;
             this.touchingNumber ++;
@@ -217,6 +211,7 @@ cc.Class({
                 other.touchingY = true;
                 //return;
             }
+
         }else if(other.node.name == "Kit"){
             if(this.health >= 70){
                 this.health = 100;
@@ -286,7 +281,7 @@ cc.Class({
             }
         }
 
-        if(this.speed.y !== 0 || this.speed.x !== 0){
+        if(this.speed.y !== 0 || this.speed.x !== 0 || this.rotation!==this.node.rotation ){
             this.stompClient.send('/room.' + this.room + '/movement', {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
@@ -320,22 +315,43 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-		this.ammoBar.progress = this.ammo/50;
+		
 		console.log(this.ammo);
         if(!this.isDead && this.ammo>0){
-			this.ammo-=1;
             var touchLoc = event.touch.getLocation();
             //this.bullet = cc.instantiate(this.bullet);
             //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
-
             cc.log(this.node.position);
 			
             this.stompClient.send('/room.' + this.room + '/newshot', {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
-
+			this.ammo-=1;
+			this.ammoBar.progress = this.ammo/50;
         }
    
 
     },
+
+	onShootBegan: function(other){
+		console.log(other.Bullet.damage);
+		this.health -= other.Bullet.damage;
+        this.healthBar.progress = this.health/100;
+		if (this.health<=0){
+
+			die();
+			//this.stompCliend.send('/app/room.'+this.room + '/newdead',{}, JSON.stringify({Bullet.Shooter}));    
+		}
+	},
+
+
+	die : function () {
+				
+				alert("You have died!");
+                this.isDead = true;
+                this.node.color = cc.Color.RED;
+				this.active=false;
+	},
+
+
 
     addBulletToScene: function (bulletEvent,bullet, idd) {
 		
@@ -356,8 +372,15 @@ cc.Class({
     },
 
     connectAndSubscribe: function(){
-        var socket = new SockJS('http://localhost:8080//stompendpoint');
-        cc.log('Connecting to WS....');
+		//PARA PROBARLO LOCALMENTE:
+
+        //var socket = new SockJS('http://localhost:8080//stompendpoint');
+        
+		//PARA CONSTRUIRLO 
+		var socket = new SockJS('/stompendpoint');
+		
+		
+		cc.log('Connecting to WS....');
         this.stompClient = Stomp.over(socket);
         //console.log(this.stompClient);
         var tempStompClient = this.stompClient;
@@ -387,6 +410,11 @@ cc.Class({
                    addBullet(bulletEvent,bull,idd);
                    
                });
+
+			  var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/newdead', function(eventbody){
+					var deadEvent = JSON.parse(eventbody.body);
+					die();
+			  });
                
         });
 
