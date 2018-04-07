@@ -159,6 +159,7 @@ cc.Class({
         if(other.node.name == "Bullet" ){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
             this.onShootBegan(other);
+        
         }else if(other.node.name == "Wall"){
             //this.healthBar.getComponent("ProgressBar").progress;
             this.touchingNumber ++;
@@ -281,7 +282,7 @@ cc.Class({
             }
         }
 
-        if(this.speed.y !== 0 || this.speed.x !== 0 || this.rotation!==this.node.rotation ){
+        if(this.speed.y !== 0 || this.speed.x !== 0 ){
             this.stompClient.send('/room.' + this.room + '/movement', {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
@@ -332,12 +333,11 @@ cc.Class({
     },
 
 	onShootBegan: function(other){
-		console.log(other.Bullet.damage);
-		this.health -= other.Bullet.damage;
+		this.health -= 10;
         this.healthBar.progress = this.health/100;
 		if (this.health<=0){
 
-			die();
+			this.die();
 			//this.stompCliend.send('/app/room.'+this.room + '/newdead',{}, JSON.stringify({Bullet.Shooter}));    
 		}
 	},
@@ -369,6 +369,11 @@ cc.Class({
 			scene.addChild(bullet);
 			
 			
+    },
+
+    registerInServer: function(){
+        
+        //axios.put
     },
 
     connectAndSubscribe: function(){
@@ -408,6 +413,7 @@ cc.Class({
                var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/newshot', function (eventbody) {
                    var bulletEvent = JSON.parse(eventbody.body);
                    addBullet(bulletEvent,bull,idd);
+                   console.log("bullet new shot");
                    
                });
 
