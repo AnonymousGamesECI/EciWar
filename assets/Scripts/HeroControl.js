@@ -37,6 +37,14 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         //private variables declaration
+		this.room = cc.find("form").getComponent("MenuController").room;
+		/*axios.get('/'+this.room+'/players')
+		.then(function(response){
+			console.log(response.data);
+		})
+		.catch(function(error){
+			alert("error:"+error);
+		});*/
         this.isDead = false;
         this.health = 100;
 		this.ammo=10;
@@ -45,7 +53,7 @@ cc.Class({
         this.id = Math.floor(Math.random()*10000000);
         //console.log(cc.find("form").getComponent("MenuController").username);
         this.username = cc.find("form").getComponent("MenuController").username;
-        this.room = cc.find("form").getComponent("MenuController").room;
+        
         this.usernameLabel.string = this.username;
 
         cc.director.getCollisionManager().enabled = true;
