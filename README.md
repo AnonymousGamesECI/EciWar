@@ -19,11 +19,13 @@ Visual content created with [Cocos2dCreator](http://www.cocos2d-x.org/)
 
 ***Product Backlog:*** [Backlog link](https://docs.google.com/spreadsheets/d/19JKvv0GIBZ0oan29yM9k0vAytdKsUeSJAGqyYWmZSj4/edit#gid=0)
 
-***HEROKU:*** https://eciwarapi.herokuapp.com/
 
 ***Trello:*** [Trello link](https://trello.com/b/1fNptMsM/arsw-2018-1-eciwar-historias)
 
-***CircleCI:*** 
-[![CircleCI](https://circleci.com/gh/AnonymousGamesECI/BackendECIWAR.svg?style=svg)](https://circleci.com/gh/AnonymousGamesECI/BackendECIWAR) 
+*_Vistas:_*
+------- 
+[![Heroku](https://wmpics.pics/di-NNAT.png)](https://eciwarapi.herokuapp.com/)
 
-***Codacy:*** [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bf0410d2a5ba4bae83ade3bd59cdceac)](https://www.codacy.com/app/AnonymousGamesEci/EciWar?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AnonymousGamesECI/EciWar&amp;utm_campaign=Badge_Grade)
+[![CircleCI](https://circleci.com/gh/AnonymousGamesECI/BackendECIWAR.svg?style=svg)](https://circleci.com/gh/AnonymousGamesECI/BackendECIWAR)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bf0410d2a5ba4bae83ade3bd59cdceac)](https://www.codacy.com/app/AnonymousGamesEci/EciWar?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AnonymousGamesECI/EciWar&amp;utm_campaign=Badge_Grade)
