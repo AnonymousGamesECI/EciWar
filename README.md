@@ -5,9 +5,9 @@
 
   Integrantes de AnonymousGamesECI:
   -------
-  - [Juan Nicolas Gomez Moreno](https://github.com/JuanNicolasGomez)
-  - [Nicolas Osorio Arias](https://github.com/Nixperful)
-  - [Juan David Ramirez Mendoza](https://github.com/CAPJackie)
+  - [Juan Nicolas Gomez Moreno](https://github.com/JuanNicolasGomez) - (JuanNicolasGomez)
+  - [Nicolas Osorio Arias](https://github.com/Nixperful) - (n.osorio y Nixperful)
+  - [Juan David Ramirez Mendoza](https://github.com/CAPJackie) - (d.ramirez, unknown y CAPJackie)
 
 
 *_Descripción resumida del producto:_*
