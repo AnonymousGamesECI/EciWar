@@ -64,8 +64,7 @@ var menu = cc.Class({
 				console.log(error);
 			}
 		};
-		console.log(self.room);
-		joinRoom(self.room, callback);
+		joinRoom(Math.floor(Math.random()*10000000), self.room, callback);
 	},
 	
 	joinThisRoom: function(){

@@ -4,11 +4,14 @@ export function getRoomPlayers(roomId, callback){
 		callback.onSuccess(response);
 	})
 	.catch(function(error){
+		//console.log("ENTRO POR EL PUTO ERRROPRROROROROROROR");
 		callback.onFailed(error);
 	});
 };
 
 export function joinRoom(playerId, roomId, callback){
+	console.log(playerId+"----------------------------------PID---------------------------------------------");
+	console.log(roomId+"-------------------------------------RID---------------------------------------------");
 	axios.put('/rooms/'+roomId+'/players', {id:playerId})
 	.then(function(){
 		callback.onSuccess();
