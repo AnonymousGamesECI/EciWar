@@ -1,6 +1,6 @@
 import { getStompClient, subscribeTopic } from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
-cc.Class({
+var menu = cc.Class({
     extends: cc.Component,
 
     properties: {
@@ -22,10 +22,6 @@ cc.Class({
     },
 
     onLoad: function () {
-		getStompClient()
-		.then(function(stompClient){
-			this.stompClient = stompClient;
-		});
         cc.game.addPersistRootNode(this.node);
 	},
 
@@ -41,10 +37,11 @@ cc.Class({
 	},
 	
 	beginOrWait: function(){
+		var self = this;
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 2){
-					cc.director.loadScene("game", this.onChangedScene(this.username, this.room));
+					cc.director.loadScene("game", self.onChangedScene(self.username, self.room));
 				}
 				else(
 					alert("The game starts until there are at least 2 participants")
@@ -54,49 +51,59 @@ cc.Class({
 				console.log(error);
 			}
 		};
+		getRoomPlayers(self.room, callback);
 	},
 	
 	loadScene: function(){
-		
+		var self = this;
 		var callback = {
 			onSuccess: function(){
-				getRoomPlayers(this.room, this.beginOrWait());
+				self.beginOrWait();
 			},
 			onFailed: function(error){
 				console.log(error);
 			}
 		};
+		console.log(self.room);
+		joinRoom(self.room, callback);
 	},
 	
 	joinThisRoom: function(){
+		var self = this;
 		var callback = {
 			onSuccess: function(){
-				joinRoom(this.room, this.loadScene());
+				self.loadScene();
 			},
 			onFailed: function(error){
 				console.log(error);
 			}
 		};
+		createRoom(self.room, callback);
 	},
 	
 	createOrJoin: function(){
+		var self = this;
 		var callback = {
 			onSuccess: function(response){
-				joinRoom(this.room, this.loadScene());
+				self.loadScene();
 			},
-			onFailed: function(error){
-				createRoom(this.room, this.joinThisRoom());
+			onFailed: function(error){				
+				self.joinThisRoom();
 			}
 		};
+		getRoomPlayers(self.room, callback);
 	},
 	
+	
+	
 	buttonClicked: function() {
-	    if(this.username == null || this.username == ""){
+		var self = this;
+	    if(self.username == null || self.username == ""){
             alert("Please enter a username");
-        }else if(this.room == null || this.room == ""){
+        }else if(self.room == null || self.room == ""){
             alert("Please enter a room number");
         }else{
-			getRoomPlayers(this.room, this.createOrJoin())   
+			self.createOrJoin();  
         }
 
     },

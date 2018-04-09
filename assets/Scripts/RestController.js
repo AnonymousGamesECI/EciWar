@@ -4,29 +4,29 @@ export function getRoomPlayers(roomId, callback){
 		callback.onSuccess(response);
 	})
 	.catch(function(error){
-		callback.onfailed(error);
+		callback.onFailed(error);
 	});
 };
 
 export function joinRoom(playerId, roomId, callback){
-	axios.put('/rooms/'+roomId+'players', {id:playerId})
+	axios.put('/rooms/'+roomId+'/players', {id:playerId})
 	.then(function(){
 		callback.onSuccess();
 	})
 	.catch(function(error){
-		callback.onfailed(error);
+		callback.onFailed(error);
 	});
-}
+};
 
 export function createRoom(roomId, callback){
-	axios.post('/rooms/'+roomId)
+	axios.post('/rooms', {id:roomId})
 	.then(function(){
 		callback.onSuccess();
 	})
 	.catch(function(error){
-		callback.onfailed(error);
+		callback.onFailed(error);
 	});
-}
+};
 
 export function deleteRoom(roomId, callback){
 	axios.delete('/rooms/'+roomId)
@@ -34,6 +34,6 @@ export function deleteRoom(roomId, callback){
 		callback.onSuccess();
 	})
 	.catch(function(error){
-		callback.onfailed(error);
+		callback.onFailed(error);
 	});
-}
+};
