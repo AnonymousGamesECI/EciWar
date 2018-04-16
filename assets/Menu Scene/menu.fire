@@ -48,7 +48,7 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0,
-    "autoReleaseAssets": null
+    "autoReleaseAssets": false
   },
   {
     "__type__": "cc.Node",
@@ -474,7 +474,7 @@
       "b": 127,
       "a": 255
     },
-    "_N$maxLength": 8,
+    "_N$maxLength": 16,
     "_N$stayOnTop": false
   },
   {
@@ -616,7 +616,7 @@
     "_N$string": "Play",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
+    "_N$fontFamily": "Tahoma",
     "_N$overflow": 1
   },
   {
@@ -1196,7 +1196,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 64.46,
+      "width": 70,
       "height": 40
     },
     "_rotationX": 0,
@@ -1231,7 +1231,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "Room: ",
+    "_N$string": "Room#:",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",

@@ -57,7 +57,7 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0,
-    "autoReleaseAssets": null
+    "autoReleaseAssets": false
   },
   {
     "__type__": "cc.Node",
@@ -1287,7 +1287,7 @@
     "_rotationX": 0,
     "_rotationY": 0,
     "_scaleX": 11.93,
-    "_scaleY": 18.4,
+    "_scaleY": 19.5,
     "_position": {
       "__type__": "cc.Vec2",
       "x": -2,
@@ -2560,7 +2560,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 97.87,
+      "width": 98,
       "height": 40
     },
     "_rotationX": 0,

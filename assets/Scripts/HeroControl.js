@@ -47,7 +47,7 @@ cc.Class({
 		});*/
         this.isDead = false;
         this.health = 100;
-		this.ammo=10;
+		this.ammo=16;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
@@ -167,6 +167,8 @@ cc.Class({
         if(other.node.name == "Bullet" ){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
             this.onShootBegan(other);
+			this.node.color = cc.Color.RED;
+			this.node.color = cc.Color.WHITE;
         
         }else if(other.node.name == "Wall"){
             //this.healthBar.getComponent("ProgressBar").progress;
@@ -229,7 +231,7 @@ cc.Class({
             }
             this.healthBar.progress = this.health/100;
         }else if (other.node.name== "Ammo"){
-			this.ammo+=6;
+			this.ammo+=15;
 			this.ammoBar.progress = this.ammo/50;			
 		}
 		
@@ -341,11 +343,12 @@ cc.Class({
     },
 
 	onShootBegan: function(other){
-		this.health -= 10;
+		this.health -= 20;
         this.healthBar.progress = this.health/100;
 		if (this.health<=0){
 
 			this.die();
+			
 			//this.stompCliend.send('/app/room.'+this.room + '/newdead',{}, JSON.stringify({Bullet.Shooter}));    
 		}
 	},
@@ -357,6 +360,7 @@ cc.Class({
                 this.isDead = true;
                 this.node.color = cc.Color.RED;
 				this.active=false;
+				cc.director.loadScene("menu");
 	},
 
 
@@ -373,11 +377,16 @@ cc.Class({
 			bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
 			bullet.getComponent('Bullet').idBullet = idd;
             //console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
-			bullet.active = true;
+			
 			scene.addChild(bullet);
+			bullet.active = true;
 			
 			
     },
+
+
+	startTheFight: function(){
+	},
 
     registerInServer: function(){
         

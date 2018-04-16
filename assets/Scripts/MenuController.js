@@ -41,11 +41,16 @@ var menu = cc.Class({
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 2){
+					//Avisar a los demás
+						//Falta implementar
+
+
 					cc.director.loadScene("game", self.onChangedScene(self.username, self.room));
 				}
-				else(
-					alert("The game starts until there are at least 2 participants")
-				)
+				else{
+					alert("espera un poco");
+					//cc.director.loadScene("waitingScreen", self.onChangedScene(self.username, self.room));
+				}
 			},
 			onFailed: function(error){
 				console.log(error);
@@ -106,5 +111,9 @@ var menu = cc.Class({
         }
 
     },
+
+	startBattle: function(){ 
+		
+	}
 
 });
