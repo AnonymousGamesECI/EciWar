@@ -4,7 +4,6 @@ export function getRoomPlayers(roomId, callback){
 		callback.onSuccess(response);
 	})
 	.catch(function(error){
-		//console.log("ENTRO POR EL PUTO ERRROPRROROROROROROR");
 		callback.onFailed(error);
 	});
 };

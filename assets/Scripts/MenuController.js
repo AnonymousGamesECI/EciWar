@@ -19,10 +19,12 @@ var menu = cc.Class({
 		},
 		username: null,
 		room: null,
+		stompClient:null,
     },
 
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
+		
 	},
 
 	EditBoxDidEndEditing: function(sender) {
@@ -30,22 +32,15 @@ var menu = cc.Class({
 		this.room = this.inputRoom.string;
     },
 	
-	onChangedScene: function(username, room){
-		console.log(username);
-		console.log(room);
-		this.node.active = false;
-	},
-	
 	beginOrWait: function(){
 		var self = this;
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 2){
-					//Avisar a los demás
-						//Falta implementar
+					self.stompClient.send("/room/start." + self.room, {}, JSON.stringify({data:"nothing"}));
 
 
-					cc.director.loadScene("game", self.onChangedScene(self.username, self.room));
+					
 				}
 				else{
 					alert("espera un poco");
@@ -107,13 +102,20 @@ var menu = cc.Class({
         }else if(self.room == null || self.room == ""){
             alert("Please enter a room number");
         }else{
-			self.createOrJoin();  
+			getStompClient()
+			.then((stpClient) => {
+				self.stompClient = stpClient;
+				subscribeTopic(self.stompClient, "/room/start." +  self.room, function(eventBody){
+					cc.director.loadScene("game", function(){
+						self.node.active = false;
+					});
+				});
+				self.createOrJoin();
+			});
+			
+				
         }
 
     },
-
-	startBattle: function(){ 
-		
-	}
 
 });
