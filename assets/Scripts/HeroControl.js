@@ -1,4 +1,5 @@
 import { getStompClient, subscribeTopic } from './StompHandler.js';
+import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
 
@@ -33,26 +34,17 @@ cc.Class({
 		}
 
     },
-
-    // use this for initialization
     onLoad: function () {
         //private variables declaration
 		this.room = cc.find("form").getComponent("MenuController").room;
-		/*axios.get('/'+this.room+'/players')
-		.then(function(response){
-			console.log(response.data);
-		})
-		.catch(function(error){
-			alert("error:"+error);
-		});*/
+		this.username = cc.find("form").getComponent("MenuController").username;
         this.isDead = false;
         this.health = 100;
 		this.ammo=16;
         this.stompClient = null;
         this.pi = 3.141516;
         this.id = Math.floor(Math.random()*10000000);
-        //console.log(cc.find("form").getComponent("MenuController").username);
-        this.username = cc.find("form").getComponent("MenuController").username;
+        
         
         this.usernameLabel.string = this.username;
 
@@ -89,6 +81,9 @@ cc.Class({
         this.touchingNumber = 0;
 		
 		
+		
+		
+		this.loadAllPlayers();
 		
     },
 
@@ -326,7 +321,7 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-		
+		console.log(cc.director.getScene());
 		console.log(this.ammo);
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();
@@ -407,6 +402,8 @@ cc.Class({
 				self.stompClient = stpClient;
 				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
 					var move = JSON.parse(eventBody.body);
+					
+					
 					if(self.id != move.id ){
 					   self.player2.position = move.ps;
 					   self.player2.rotation = move.rt;
@@ -423,7 +420,28 @@ cc.Class({
 				});
 			});
 
-    }
+    },
+	
+	loadAllPlayers: function(){
+		var self = this;
+		var callback = {
+			onSuccess: function(response){
+				var loadedPlayers = response.data;
+				loadedPlayers.forEach(
+					function(player){
+						var plr = cc.instantiate(self.player2);					
+						cc.director.getScene().addChild(plr);
+						plr.active = true;
+					}
+				);
+				
+			},
+			onFailed: function(error){
+				console.log(error);
+			}
+		};
+		getRoomPlayers(self.room, callback);
+	},
 
 
 });

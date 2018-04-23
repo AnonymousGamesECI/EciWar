@@ -1791,7 +1791,7 @@
       "__id__": 53
     },
     "_enabled": true,
-    "speed": 2000,
+    "speed": 100,
     "targetX": 0,
     "targetY": 0,
     "idBullet": 0,
@@ -2586,7 +2586,7 @@
     "node": {
       "__id__": 56
     },
-    "_enabled": true,
+    "_enabled": false,
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",

@@ -1256,6 +1256,7 @@
       "__id__": 13
     },
     "room": null,
-    "stompClient": null
+    "stompClient": null,
+    "player": null
   }
 ]

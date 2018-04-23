@@ -20,6 +20,10 @@ var menu = cc.Class({
 		username: null,
 		room: null,
 		stompClient:null,
+		player: {
+            default: null,
+            type: cc.Node,
+        },
     },
 
     onLoad: function () {
@@ -36,14 +40,13 @@ var menu = cc.Class({
 		var self = this;
 		var callback = {
 			onSuccess: function(response){
-				if(response.data.length >= 2){
-					self.stompClient.send("/room/start." + self.room, {}, JSON.stringify({data:"nothing"}));
-
-
-					
+				if(response.data.length >= 3){
+					self.stompClient.send("/room/start." + self.room, {}, JSON.stringify({playersLoaded:response.data}));
 				}
 				else{
-					cc.director.loadScene("waitingScreen", null);
+					cc.director.loadScene("waitingScreen", function(){
+						self.node.active = false;
+					});
 				}
 			},
 			onFailed: function(error){
