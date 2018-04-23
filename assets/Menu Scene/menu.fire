@@ -1255,6 +1255,7 @@
     "sendButton": {
       "__id__": 13
     },
-    "room": null
+    "room": null,
+    "stompClient": null
   }
 ]

@@ -43,8 +43,7 @@ var menu = cc.Class({
 					
 				}
 				else{
-					alert("espera un poco");
-					//cc.director.loadScene("waitingScreen", self.onChangedScene(self.username, self.room));
+					cc.director.loadScene("waitingScreen", null);
 				}
 			},
 			onFailed: function(error){

@@ -1,4 +1,4 @@
-
+import { getStompClient, subscribeTopic } from './StompHandler.js';
 cc.Class({
     extends: cc.Component,
 
@@ -399,47 +399,29 @@ cc.Class({
         //var socket = new SockJS('http://localhost:8080//stompendpoint');
         
 		//PARA CONSTRUIRLO 
-		var socket = new SockJS('/stompendpoint');
 		
+		var self = this;
 		
-		cc.log('Connecting to WS....');
-        this.stompClient = Stomp.over(socket);
-        //console.log(this.stompClient);
-        var tempStompClient = this.stompClient;
-		
-		var position = this.position;
-		var rotation = this.rotation;
-		var addBullet = this.addBullet;
-		var bull = this.bullet;
-		//cc.log(addBullet);
-		
-        var p2 = this.player2;
-        var idd = this.id;
-        var rm = this.room
-        this.stompClient.connect({}, function (frame) {
-               console.log('Connected: ' + frame);
-               var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/movement', function (eventbody) {
-
-                   var move = JSON.parse(eventbody.body);
-                   if(idd != move.id ){
-                       p2.position = move.ps;
-                       p2.rotation = move.rt;
-                   }
-               });
-
-               var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/newshot', function (eventbody) {
-                   var bulletEvent = JSON.parse(eventbody.body);
-                   addBullet(bulletEvent,bull,idd);
-                   console.log("bullet new shot");
-                   
-               });
-
-			  var subscriptionPoint = tempStompClient.subscribe('/room.' + rm + '/newdead', function(eventbody){
-					var deadEvent = JSON.parse(eventbody.body);
-					die();
-			  });
-               
-        });
+		getStompClient()
+			.then((stpClient) => {
+				self.stompClient = stpClient;
+				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
+					var move = JSON.parse(eventBody.body);
+					if(self.id != move.id ){
+					   self.player2.position = move.ps;
+					   self.player2.rotation = move.rt;
+					}
+				});
+				subscribeTopic(self.stompClient, "/room." + self.room + "/newshot", function(eventBody){
+					var bulletEvent = JSON.parse(eventBody.body);
+                    self.addBullet(bulletEvent,self.bullet,self.id);
+                    console.log("bullet new shot");
+				});
+				subscribeTopic(self.stompClient, "/room." + self.room + "/newdead", function(eventBody){
+					var deadEvent = JSON.parse(eventBody.body);
+					self.die();
+				});
+			});
 
     }
 
