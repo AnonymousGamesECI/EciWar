@@ -38,12 +38,13 @@ cc.Class({
         //private variables declaration
 		this.room = cc.find("form").getComponent("MenuController").room;
 		this.username = cc.find("form").getComponent("MenuController").username;
+		this.id = cc.find("form").getComponent("MenuController").id;
         this.isDead = false;
         this.health = 100;
 		this.ammo=16;
         this.stompClient = null;
         this.pi = 3.141516;
-        this.id = Math.floor(Math.random()*10000000);
+		
         
         
         this.usernameLabel.string = this.username;
@@ -79,6 +80,8 @@ cc.Class({
         this.preStep = cc.v2();
 
         this.touchingNumber = 0;
+		
+		this.loadedCars = [];
 		
 		
 		
@@ -362,6 +365,9 @@ cc.Class({
 
     addBulletToScene: function (bulletEvent,bullet, idd) {
 		
+		
+			
+		
 			var scene = cc.director.getScene();
 
 			var bullet = cc.instantiate(bullet);
@@ -403,11 +409,15 @@ cc.Class({
 				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
 					var move = JSON.parse(eventBody.body);
 					
+					self.loadedCars.forEach(
+						function(player){
+							if(move.id == player.id){
+								player.position = move.ps;
+								player.rotation = move.rt;
+							}
+						}
+					);
 					
-					if(self.id != move.id ){
-					   self.player2.position = move.ps;
-					   self.player2.rotation = move.rt;
-					}
 				});
 				subscribeTopic(self.stompClient, "/room." + self.room + "/newshot", function(eventBody){
 					var bulletEvent = JSON.parse(eventBody.body);
@@ -426,12 +436,21 @@ cc.Class({
 		var self = this;
 		var callback = {
 			onSuccess: function(response){
-				var loadedPlayers = response.data;
-				loadedPlayers.forEach(
+				self.loadedPlayers = response.data;
+				var cont = 2;
+				self.loadedPlayers.forEach(
 					function(player){
-						var plr = cc.instantiate(self.player2);					
-						cc.director.getScene().addChild(plr);
-						plr.active = true;
+						if(player.id != self.id){
+							var plr = cc.instantiate(self.player2);					
+							cc.director.getScene().addChild(plr);
+							
+							plr.x = self.position.x;
+							plr.y = self.position.y + (cont*10);
+							
+							cont++;
+							plr.active = true;
+						}
+						
 					}
 				);
 				
@@ -442,6 +461,7 @@ cc.Class({
 		};
 		getRoomPlayers(self.room, callback);
 	},
+	
 
 
 });

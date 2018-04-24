@@ -19,6 +19,7 @@ var menu = cc.Class({
 		},
 		username: null,
 		room: null,
+		id:null,
 		stompClient:null,
 		player: {
             default: null,
@@ -28,6 +29,7 @@ var menu = cc.Class({
 
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
+		this.id = Math.floor(Math.random()*10000000);
 		
 	},
 
@@ -66,7 +68,7 @@ var menu = cc.Class({
 				console.log(error);
 			}
 		};
-		joinRoom(Math.floor(Math.random()*10000000), self.room, callback);
+		joinRoom(self.id, self.room, callback);
 	},
 	
 	joinThisRoom: function(){
