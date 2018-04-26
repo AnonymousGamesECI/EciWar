@@ -9,8 +9,6 @@ export function getRoomPlayers(roomId, callback){
 };
 
 export function joinRoom(playerId, roomId, callback){
-	console.log(playerId+"----------------------------------PID---------------------------------------------");
-	console.log(roomId+"-------------------------------------RID---------------------------------------------");
 	axios.put('/rooms/'+roomId+'/players', {id:playerId})
 	.then(function(){
 		callback.onSuccess();

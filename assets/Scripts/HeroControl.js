@@ -45,6 +45,8 @@ cc.Class({
         this.stompClient = null;
         this.pi = 3.141516;
 		
+		this.players = null;
+		
         
         
         this.usernameLabel.string = this.username;
@@ -289,6 +291,7 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0 ){
+			//console.log("IDDDDDDDDDDDDDDDDDDDDDD"+this.id);
             this.stompClient.send('/room.' + this.room + '/movement', {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
         }
 
@@ -322,8 +325,8 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-		console.log(cc.director.getScene());
-		console.log(this.ammo);
+		//console.log(cc.director.getScene());
+		//console.log(this.ammo);
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();
             //this.bullet = cc.instantiate(this.bullet);
@@ -407,11 +410,13 @@ cc.Class({
 				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
 					var move = JSON.parse(eventBody.body);
 					
-					console.log("ID: "+move.id+" PS: "+move.ps)
+					//console.log("ID: "+move.id+" PS: "+move.ps)
 					
 					self.loadedPlayers.forEach(
 						function(player){
+							console.log("MOVE ID: "+move.id+"="+player.id+"?--------------------------------->X: "+move.ps.x+" Y: "+move.ps.y);
 							if(move.id == player.id && player.id != self.id){
+								
 								player.position = move.ps;
 								player.rotation = move.rt;
 							}
@@ -436,17 +441,20 @@ cc.Class({
 		var self = this;
 		var callback = {
 			onSuccess: function(response){
-				self.loadedPlayers = response.data;
+				//console.log("DATA: "+JSON.stringify(response));
 				var cont = 2;
-				self.loadedPlayers.forEach(
+				response.data.forEach(
 					function(player){
 						if(player.id != self.id){
 							var plr = cc.instantiate(cc.find("p2"));
 							self.loadedPlayers.push(plr);
+							
+							//console.log("ID: "+player.id+", players: "+self.loadedPlayers.length);
 							cc.director.getScene().addChild(plr);
 							
 							plr.x = self.position.x;
 							plr.y = self.position.y + (cont*10);
+							plr.id = player.id;
 							
 							cont++;
 							plr.active = true;
