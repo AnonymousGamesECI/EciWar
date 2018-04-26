@@ -16,9 +16,9 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
-        player2: {
-            default : null,
-            type: cc.Node,
+        loadedPlayers: {
+            default : [],
+            type: [cc.Node],
         },
         healthBar: {
             default : null,
@@ -80,8 +80,6 @@ cc.Class({
         this.preStep = cc.v2();
 
         this.touchingNumber = 0;
-		
-		this.loadedCars = [];
 		
 		
 		
@@ -409,9 +407,11 @@ cc.Class({
 				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
 					var move = JSON.parse(eventBody.body);
 					
-					self.loadedCars.forEach(
+					console.log("ID: "+move.id+" PS: "+move.ps)
+					
+					self.loadedPlayers.forEach(
 						function(player){
-							if(move.id == player.id){
+							if(move.id == player.id && player.id != self.id){
 								player.position = move.ps;
 								player.rotation = move.rt;
 							}
@@ -441,7 +441,8 @@ cc.Class({
 				self.loadedPlayers.forEach(
 					function(player){
 						if(player.id != self.id){
-							var plr = cc.instantiate(self.player2);					
+							var plr = cc.instantiate(cc.find("p2"));
+							self.loadedPlayers.push(plr);
 							cc.director.getScene().addChild(plr);
 							
 							plr.x = self.position.x;
