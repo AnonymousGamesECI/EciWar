@@ -41,13 +41,11 @@ cc.Class({
 		this.id = cc.find("form").getComponent("MenuController").id;
         this.isDead = false;
         this.health = 100;
-		this.ammo=16;
+		this.ammo=100;
         this.stompClient = null;
         this.pi = 3.141516;
 		
 		this.players = null;
-		
-        
         
         this.usernameLabel.string = this.username;
 
@@ -295,8 +293,11 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0 ){
-			//console.log("IDDDDDDDDDDDDDDDDDDDDDD"+this.id);
-            this.stompClient.send('/room.' + this.room + '/movement', {}, JSON.stringify({id: this.id, ps: this.node.position, rt: this.node.rotation}));
+            this.stompClient.send('/app/movement.' + this.room , {}, JSON.stringify( {
+																		id: this.id,
+																		position: this.node.position,
+																		rotation: this.node.rotation
+																	}));
         }
 
         if(this.collisionY < 0){
@@ -331,13 +332,16 @@ cc.Class({
     onTouchBegan: function (event) {
 		//console.log(cc.director.getScene());
 		//console.log(this.ammo);
+
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();
-            //this.bullet = cc.instantiate(this.bullet);
-            //this.stompClient.send("/room/newshot", {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "bulletP":this.bullet.position, "bulletX":this.bullet.getComponent('Bullet').targetX, "bulletY":this.bullet.getComponent('Bullet').targetY, "bulletActive":this.bullet.active}));
-            cc.log(this.node.position);
-			
-            this.stompClient.send('/room.' + this.room + '/newshot', {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
+            console.log("WORKING MOUSE CLICKKKKKKKKKKKKKKKKKKKKKK" + this.node.position);			
+            this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
+																					idShooter: this.id,
+																					"touchLocX": touchLoc.x,
+																					"touchLocY": touchLoc.y,
+																					"position": this.node.position
+																					}));
 			this.ammo-=1;
 			this.ammoBar.string = this.ammo;
         }
@@ -371,6 +375,7 @@ cc.Class({
 
     addBulletToScene: function (bulletEvent,bullet, idd) {
 		
+
 		
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
@@ -380,6 +385,7 @@ cc.Class({
 			var perX = numX/sumDir;
 			var perY = numY/sumDir;
 			
+
 			var scene = cc.director.getScene();
 
 			var bullet = cc.instantiate(bullet);
@@ -410,7 +416,6 @@ cc.Class({
 			bullet.getComponent('Bullet').targetX = numX ;
 			bullet.getComponent('Bullet').targetY = numY;
 			bullet.getComponent('Bullet').idBullet = idd;
-            //console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
 			
 			scene.addChild(bullet);
 			bullet.active = true;
@@ -440,16 +445,14 @@ cc.Class({
 				self.stompClient = stpClient;
 				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
 					var move = JSON.parse(eventBody.body);
-					
-					//console.log("ID: "+move.id+" PS: "+move.ps)
+				
 					
 					self.loadedPlayers.forEach(
 						function(player){
-							console.log("MOVE ID: "+move.id+"="+player.id+"?--------------------------------->X: "+move.ps.x+" Y: "+move.ps.y);
 							if(move.id == player.id && player.id != self.id){
 								
-								player.position = move.ps;
-								player.rotation = move.rt;
+								player.position = move.position;
+								player.rotation = move.rotation;
 							}
 						}
 					);
