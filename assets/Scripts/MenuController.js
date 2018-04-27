@@ -29,11 +29,7 @@ var menu = cc.Class({
 
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
-		this.id = Math.floor(Math.random()*10000000);
-		this.prueba = 34;
-		this.prueba2 = 31;
-		this.prueba3 = {abs:adsdsa}
-		
+		this.id = Math.floor(Math.random()*10000000);		
 	},
 
 	EditBoxDidEndEditing: function(sender) {
@@ -46,7 +42,7 @@ var menu = cc.Class({
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 3){
-					self.stompClient.send("/room/start." + self.room, {}, JSON.stringify({playersLoaded:response.data}));
+					self.stompClient.send("/app/start." + self.room, {}, null);
 				}
 				else{
 					cc.director.loadScene("waitingScreen", function(){
@@ -112,7 +108,8 @@ var menu = cc.Class({
 			getStompClient()
 			.then((stpClient) => {
 				self.stompClient = stpClient;
-				subscribeTopic(self.stompClient, "/room/start." +  self.room, function(eventBody){
+				subscribeTopic(self.stompClient, "/room." + self.room + "/start", function(eventBody){
+					console.log(eventBody.body);
 					cc.director.loadScene("game", function(){
 						self.node.active = false;
 					});
