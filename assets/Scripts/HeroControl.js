@@ -26,15 +26,15 @@ cc.Class({
         },
 		ammoBar:{
 			default: null,
-			type:cc.ProgressBar,
+			type:cc.Label,
 		},
 		usernameLabel: {
 		    default: null,
 		    type: cc.Label,
-		}
-
+		},
+		
     },
-    onLoad: function () {
+	    onLoad: function () {
         //private variables declaration
 		this.room = cc.find("form").getComponent("MenuController").room;
 		this.username = cc.find("form").getComponent("MenuController").username;
@@ -162,11 +162,11 @@ cc.Class({
     onCollisionEnter: function (other, self) {
         //console.log(this.healthBar.progress);
 
-        if(other.node.name == "Bullet" ){
+        if(other.node.name == "Bullet" && other.Bullet.Shooter!=this ){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
-            this.onShootBegan(other);
+			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
-			this.node.color = cc.Color.WHITE;
+			
         
         }else if(other.node.name == "Wall"){
             //this.healthBar.getComponent("ProgressBar").progress;
@@ -230,7 +230,11 @@ cc.Class({
             this.healthBar.progress = this.health/100;
         }else if (other.node.name== "Ammo"){
 			this.ammo+=15;
-			this.ammoBar.progress = this.ammo/50;			
+			
+			this.ammoBar.string = this.ammo;			
+		}
+		else if (other.node.name=="p2"){
+			
 		}
 		
     },
@@ -335,7 +339,7 @@ cc.Class({
 			
             this.stompClient.send('/room.' + this.room + '/newshot', {}, JSON.stringify({ id: this.id, "touchLocX": touchLoc.x, "touchLocY": touchLoc.y, "position": this.node.position}));
 			this.ammo-=1;
-			this.ammoBar.progress = this.ammo/50;
+			this.ammoBar.string = this.ammo;
         }
    
 
@@ -350,6 +354,8 @@ cc.Class({
 			
 			//this.stompCliend.send('/app/room.'+this.room + '/newdead',{}, JSON.stringify({Bullet.Shooter}));    
 		}
+		this.node.color = cc.Color.WHITE;
+		
 	},
 
 
@@ -357,8 +363,7 @@ cc.Class({
 				
 				alert("You have died!");
                 this.isDead = true;
-                this.node.color = cc.Color.RED;
-				this.active=false;
+                this.node.destroy();
 				cc.director.loadScene("menu");
 	},
 
@@ -367,16 +372,43 @@ cc.Class({
     addBulletToScene: function (bulletEvent,bullet, idd) {
 		
 		
+			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
+			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
+			var radio = 90;
+			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
-		
+			var perX = numX/sumDir;
+			var perY = numY/sumDir;
+			
 			var scene = cc.director.getScene();
 
 			var bullet = cc.instantiate(bullet);
+			
+			bullet.x= bulletEvent.position.x + (radio*perX);
+			bullet.y= bulletEvent.position.y + (radio*perY);
+			
+/*
+			if (numX>=0 && numY>=0){
+				bullet.x= bulletEvent.position.x + (radio*perX);
+				bullet.y= bulletEvent.position.y + (radio*perY);
+			}
+			else if(numX>=0 && numY<0){
+				bullet.x= bulletEvent.position.x + (radio*perX);
+				bullet.y= bulletEvent.position.y-(radio*perY);
+			}
+			else if(numX<0 && numY>=0){
+				bullet.x= bulletEvent.position.x - (radio*perX);
+				bullet.y= bulletEvent.position.y + (radio*perY);
+			}
+			else if(numX<0 && numY<0){
+				bullet.x= bulletEvent.position.x - (radio*perX);
+				bullet.y= bulletEvent.position.y - (radio*perY);
+			}
+			
+			*/
 
-			bullet.x = bulletEvent.position.x;
-			bullet.y = bulletEvent.position.y;
-			bullet.getComponent('Bullet').targetX = bulletEvent.touchLocX - bulletEvent.position.x;
-			bullet.getComponent('Bullet').targetY = bulletEvent.touchLocY - bulletEvent.position.y;
+			bullet.getComponent('Bullet').targetX = numX ;
+			bullet.getComponent('Bullet').targetY = numY;
 			bullet.getComponent('Bullet').idBullet = idd;
             //console.log("BULLEEEET: " + bullet.getComponent("Bullet").idBullet);
 			
@@ -387,9 +419,7 @@ cc.Class({
     },
 
 
-	startTheFight: function(){
-	},
-
+	
     registerInServer: function(){
         
         //axios.put
@@ -401,6 +431,7 @@ cc.Class({
         //var socket = new SockJS('http://localhost:8080//stompendpoint');
         
 		//PARA CONSTRUIRLO 
+		//socket = new SockJS('/stompendpoint');
 		
 		var self = this;
 		
