@@ -30,7 +30,6 @@ var menu = cc.Class({
 
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
-<<<<<<< HEAD
 		this.id = Math.floor(Math.random()*10000000);
 				
 	},
