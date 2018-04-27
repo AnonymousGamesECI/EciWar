@@ -31,10 +31,7 @@ var menu = cc.Class({
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
 		this.id = Math.floor(Math.random()*10000000);
-		this.prueba = 34;
-		this.prueba2 = 31;
-		this.prueba3 = {abs:adsdsa}
-		
+				
 	},
 
 	EditBoxDidEndEditing: function(sender) {
