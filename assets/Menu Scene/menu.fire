@@ -972,14 +972,14 @@
       "width": 153,
       "height": 259
     },
-    "_rotationX": 128,
-    "_rotationY": 128,
+    "_rotationX": 73,
+    "_rotationY": 73,
     "_scaleX": 0.71,
     "_scaleY": 0.71,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 153,
-      "y": 307
+      "x": 183,
+      "y": 240
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -1258,7 +1258,6 @@
     "room": null,
     "id": null,
     "stompClient": null,
-    "player": null,
-    "prueba": null
+    "player": null
   }
 ]

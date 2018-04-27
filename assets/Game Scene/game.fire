@@ -798,12 +798,12 @@
     },
     "_rotationX": 0,
     "_rotationY": 0,
-    "_scaleX": 53.0300053,
-    "_scaleY": 124.0448222,
+    "_scaleX": 53.03,
+    "_scaleY": 22.33,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 177.6667441,
-      "y": 634.2943632
+      "x": 351,
+      "y": -99
     },
     "_skewX": 0,
     "_skewY": 0,
