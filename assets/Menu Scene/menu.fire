@@ -896,12 +896,12 @@
     },
     "_rotationX": -143,
     "_rotationY": -143,
-    "_scaleX": 0.45,
-    "_scaleY": 0.45,
+    "_scaleX": 0.76,
+    "_scaleY": 0.76,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 827,
-      "y": 446
+      "x": 816,
+      "y": 408
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -972,14 +972,14 @@
       "width": 153,
       "height": 259
     },
-    "_rotationX": 48,
-    "_rotationY": 48,
-    "_scaleX": 0.62,
-    "_scaleY": 0.62,
+    "_rotationX": 73,
+    "_rotationY": 73,
+    "_scaleX": 0.71,
+    "_scaleY": 0.71,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 162,
-      "y": 143
+      "x": 183,
+      "y": 240
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -1256,6 +1256,7 @@
       "__id__": 13
     },
     "room": null,
+    "id": null,
     "stompClient": null,
     "player": null
   }
