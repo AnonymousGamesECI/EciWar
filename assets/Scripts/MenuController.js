@@ -25,7 +25,7 @@ var menu = cc.Class({
             default: null,
             type: cc.Node,
         },
-		prueba:null,
+		
     },
 
     onLoad: function () {
