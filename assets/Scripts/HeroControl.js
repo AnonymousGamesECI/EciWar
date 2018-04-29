@@ -160,7 +160,7 @@ cc.Class({
     onCollisionEnter: function (other, self) {
         //console.log(this.healthBar.progress);
 
-        if(other.node.name == "Bullet" && other.Bullet.Shooter!=this ){
+        if(other.node.name == "Bullet"){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
 			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
@@ -335,7 +335,7 @@ cc.Class({
 
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();
-            console.log("WORKING MOUSE CLICKKKKKKKKKKKKKKKKKKKKKK" + this.node.position);			
+            //console.log("WORKING MOUSE CLICKKKKKKKKKKKKKKKKKKKKKK" + this.node.position);			
             this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
@@ -350,13 +350,18 @@ cc.Class({
     },
 
 	onShootBegan: function(other){
+		var self = this;
 		this.health -= 20;
         this.healthBar.progress = this.health/100;
+		var idShooter = other.node.getComponent('Bullet').idBullet;
 		if (this.health<=0){
-
-			this.die();
-			
-			//this.stompCliend.send('/app/room.'+this.room + '/newdead',{}, JSON.stringify({Bullet.Shooter}));    
+			axios.put('/rooms/' + this.room + '/players/remove', {id : idShooter})
+			.then(function(){
+				self.stompClient.send('/app/newdeath.'+self.room,{}, JSON.stringify({id : idShooter}));  
+			})
+			.catch(function(error){
+				console.log(error);
+			});			 
 		}
 		this.node.color = cc.Color.WHITE;
 		
@@ -364,11 +369,14 @@ cc.Class({
 
 
 	die : function () {
-				
-				alert("You have died!");
-                this.isDead = true;
-                this.node.destroy();
-				cc.director.loadScene("menu");
+		var self = this;
+		alert("You have died!");
+		this.isDead = true;
+		//self.node.active = false;
+		cc.game.removePersistRootNode(cc.find('form'));
+		cc.director.loadScene("menu", function(){
+			console.log("BEGIN");
+		});
 	},
 
 
@@ -463,13 +471,29 @@ cc.Class({
                     self.addBullet(bulletEvent,self.bullet,self.id);
                     console.log("bullet new shot");
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/newdead", function(eventBody){
-					var deadEvent = JSON.parse(eventBody.body);
-					self.die();
+				subscribeTopic(self.stompClient, "/room." + self.room + "/newdeath", function(eventBody){
+					var deathEvent = JSON.parse(eventBody.body);
+					if(deathEvent.id != self.id){
+						self.deletePlayer(deathEvent.id);
+					}
+					else{
+						self.die();
+					}
+					
 				});
 			});
 
     },
+	
+	deletePlayer: function(id){
+		var self = this;
+		self.loadedPlayers = self.loadedPlayers.filter(function( player ) {
+			if(player.id == id){
+				player.destroy();
+			}
+			return player.id != id;
+		});
+	},
 	
 	loadAllPlayers: function(){
 		var self = this;
