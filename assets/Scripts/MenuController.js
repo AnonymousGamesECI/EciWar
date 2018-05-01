@@ -35,8 +35,10 @@ var menu = cc.Class({
 	},
 
 	EditBoxDidEndEditing: function(sender) {
+		
 		this.username = this.inputName.string;
-		this.room = this.inputRoom.string;
+		//this.room = this.inputRoom.string;
+		//console.log("ROOOM: " + this.room);
     },
 	
 	beginOrWait: function(){
@@ -122,6 +124,11 @@ var menu = cc.Class({
 				
         }
 
-    },
+	},
+	
+	setRoom: function(event, roomId){
+		console.log(roomId);
+		this.room = roomId;
+	}
 
 });
