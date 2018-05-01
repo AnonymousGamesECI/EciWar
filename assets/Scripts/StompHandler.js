@@ -1,8 +1,8 @@
 export function getStompClient() {
 	return new Promise((resolve) => {
 		//const socket = new SockJS("http://localhost:8080//stompendpoint");
-		const socket = new SockJS("/stompendpoint");
-		const stompClient = Stomp.over(socket);
+		var socket = new SockJS("/stompendpoint");
+		var stompClient = Stomp.over(socket);
 		stompClient.connect({}, function(frame) {
 			resolve(stompClient);
 		});

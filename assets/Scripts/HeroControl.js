@@ -1,4 +1,4 @@
-import { getStompClient, subscribeTopic } from './StompHandler.js';
+import { getStompClient, subscribeTopic} from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
@@ -376,10 +376,10 @@ cc.Class({
 		var self = this;
 		alert("You have died!");
 		this.isDead = true;
-		self.node.active = false;
+		this.node.active = false;
 		cc.game.removePersistRootNode(cc.find('form'));
 		cc.director.loadScene("menu", function(){
-			console.log("BEGIN");
+			console.log(cc.find('Player'));
 		});
 	},
 
@@ -482,8 +482,7 @@ cc.Class({
 					}
 					else{
 						self.die();
-					}
-					
+					}			
 				});
 				subscribeTopic(self.stompClient, "/room." + self.room + "/winner", function(eventBody){
 					var winnerEvent = JSON.parse(eventBody.body);
@@ -498,6 +497,15 @@ cc.Class({
 	noticeWinner: function(id){
 		var self = this;
 		alert("YOU HAVE WON");
+		this.node.active = false;
+		cc.game.removePersistRootNode(cc.find('form'));
+		axios.delete('/rooms/'+self.room)
+		.then(function(){
+			cc.director.loadScene("menu", function(){
+				console.log("ya");
+			});
+		})
+		
 	},
 	
 	deletePlayer: function(id){
