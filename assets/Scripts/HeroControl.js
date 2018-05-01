@@ -165,8 +165,9 @@ cc.Class({
 			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
 			
+			
         
-        }else if(other.node.name == "Wall"){
+        }else if(other.node.name == "Wall" || other.node.name == "p2"){
             //this.healthBar.getComponent("ProgressBar").progress;
             this.touchingNumber ++;
 
@@ -231,9 +232,8 @@ cc.Class({
 			
 			this.ammoBar.string = this.ammo;			
 		}
-		else if (other.node.name=="p2"){
-			
-		}
+		
+		this.node.color= cc.Color.WHITE;
 		
     },
 
@@ -387,7 +387,7 @@ cc.Class({
 		
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
-			var radio = 90;
+			var radio = 110;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
 			var perX = numX/sumDir;
@@ -509,9 +509,24 @@ cc.Class({
 							
 							//console.log("ID: "+player.id+", players: "+self.loadedPlayers.length);
 							cc.director.getScene().addChild(plr);
+							if (cont==2){
+								plr.x = self.position.x ;
+								plr.y = self.position.y ;
+							}
+							else if(cont==3){
+								plr.x = self.position.x + (cont*100) ;
+								plr.y = self.position.y;
+							}
+							else if(cont==4){
+								plr.x = self.position.x  ;
+								plr.y = self.position.y - (cont*50);
+							}
+							else{
+								plr.x = self.position.x + (cont*100) ;
+								plr.y = self.position.y + (cont*100);
+							}
 							
-							plr.x = self.position.x;
-							plr.y = self.position.y + (cont*10);
+							
 							plr.id = player.id;
 							
 							cont++;
