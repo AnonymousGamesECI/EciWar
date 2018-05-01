@@ -256,6 +256,7 @@ cc.Class({
     },
     
     update: function (dt) {
+		
 
         if (this.direction === 0) {
             if (this.speed.x > 0) {
@@ -330,12 +331,9 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-		//console.log(cc.director.getScene());
-		//console.log(this.ammo);
 
         if(!this.isDead && this.ammo>0){
-            var touchLoc = event.touch.getLocation();
-            //console.log("WORKING MOUSE CLICKKKKKKKKKKKKKKKKKKKKKK" + this.node.position);			
+            var touchLoc = event.touch.getLocation();		
             this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
@@ -357,7 +355,13 @@ cc.Class({
 		if (this.health<=0){
 			axios.put('/rooms/' + this.room + '/players/remove', {id : idShooter})
 			.then(function(){
-				self.stompClient.send('/app/newdeath.'+self.room,{}, JSON.stringify({id : idShooter}));  
+				axios.get('/rooms/'+self.room+'/players')
+				.then(function(response){
+					if(response.data.length == 1){
+						self.stompClient.send('/app/winner.' + self.room, {}, JSON.stringify({id: idShooter}));
+					}
+				});
+				self.stompClient.send('/app/newdeath.' + self.room,{}, JSON.stringify({id : idShooter}));  
 			})
 			.catch(function(error){
 				console.log(error);
@@ -372,7 +376,7 @@ cc.Class({
 		var self = this;
 		alert("You have died!");
 		this.isDead = true;
-		//self.node.active = false;
+		self.node.active = false;
 		cc.game.removePersistRootNode(cc.find('form'));
 		cc.director.loadScene("menu", function(){
 			console.log("BEGIN");
@@ -481,9 +485,20 @@ cc.Class({
 					}
 					
 				});
+				subscribeTopic(self.stompClient, "/room." + self.room + "/winner", function(eventBody){
+					var winnerEvent = JSON.parse(eventBody.body);
+					if(winnerEvent.id != self.id){
+						self.noticeWinner(winnerEvent.id);
+					}	
+				});
 			});
 
     },
+	
+	noticeWinner: function(id){
+		var self = this;
+		alert("YOU HAVE WON");
+	},
 	
 	deletePlayer: function(id){
 		var self = this;
