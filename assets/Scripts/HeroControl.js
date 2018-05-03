@@ -1,4 +1,4 @@
-import { getStompClient, subscribeTopic } from './StompHandler.js';
+import { getStompClient, subscribeTopic} from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
@@ -31,6 +31,10 @@ cc.Class({
 		usernameLabel: {
 		    default: null,
 		    type: cc.Label,
+		},
+		muerte:{
+			default:null,
+			type: cc.Node,
 		},
 		
     },
@@ -165,8 +169,9 @@ cc.Class({
 			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
 			
+			
         
-        }else if(other.node.name == "Wall"){
+        }else if(other.node.name == "Wall" || other.node.name == "p2"){
             //this.healthBar.getComponent("ProgressBar").progress;
             this.touchingNumber ++;
 
@@ -223,17 +228,22 @@ cc.Class({
             if(this.health >= 70){
                 this.health = 100;
             }else{
-                this.health += 30;
+                this.health += 50;
             }
             this.healthBar.progress = this.health/100;
         }else if (other.node.name== "Ammo"){
 			this.ammo+=15;
 			
 			this.ammoBar.string = this.ammo;			
+		}else if (other.node.name=="Death"){
+			this.ammo+=30;
+			this.ammoBar.string = this.ammo;
+			this.health+=40;
+			this.healthBar.progress = this.health/100;
 		}
-		else if (other.node.name=="p2"){
-			
-		}
+		
+		
+		this.node.color= cc.Color.WHITE;
 		
     },
 
@@ -256,6 +266,7 @@ cc.Class({
     },
     
     update: function (dt) {
+		
 
         if (this.direction === 0) {
             if (this.speed.x > 0) {
@@ -330,12 +341,9 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-		//console.log(cc.director.getScene());
-		//console.log(this.ammo);
 
         if(!this.isDead && this.ammo>0){
-            var touchLoc = event.touch.getLocation();
-            //console.log("WORKING MOUSE CLICKKKKKKKKKKKKKKKKKKKKKK" + this.node.position);			
+            var touchLoc = event.touch.getLocation();		
             this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
@@ -357,7 +365,13 @@ cc.Class({
 		if (this.health<=0){
 			axios.put('/rooms/' + this.room + '/players/remove', {id : idShooter})
 			.then(function(){
-				self.stompClient.send('/app/newdeath.'+self.room,{}, JSON.stringify({id : idShooter}));  
+				axios.get('/rooms/'+self.room+'/players')
+				.then(function(response){
+					if(response.data.length == 1){
+						self.stompClient.send('/app/winner.' + self.room, {}, JSON.stringify({id: idShooter}));
+					}
+				});
+				self.stompClient.send('/app/newdeath.' + self.room,{}, JSON.stringify({id : idShooter}));  
 			})
 			.catch(function(error){
 				console.log(error);
@@ -372,10 +386,10 @@ cc.Class({
 		var self = this;
 		alert("You have died!");
 		this.isDead = true;
-		//self.node.active = false;
+		this.node.active = false;
 		cc.game.removePersistRootNode(cc.find('form'));
 		cc.director.loadScene("menu", function(){
-			console.log("BEGIN");
+			console.log(cc.find('Player'));
 		});
 	},
 
@@ -387,7 +401,7 @@ cc.Class({
 		
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
-			var radio = 90;
+			var radio = 110;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
 			var perX = numX/sumDir;
@@ -478,21 +492,56 @@ cc.Class({
 					}
 					else{
 						self.die();
-					}
-					
+					}			
+				});
+				subscribeTopic(self.stompClient, "/room." + self.room + "/winner", function(eventBody){
+					var winnerEvent = JSON.parse(eventBody.body);
+					if(winnerEvent.id != self.id){
+						self.noticeWinner(winnerEvent.id);
+					}	
 				});
 			});
 
     },
 	
-	deletePlayer: function(id){
+	noticeWinner: function(id){
 		var self = this;
+		alert("YOU HAVE WON");
+		this.node.active = false;
+		cc.game.removePersistRootNode(cc.find('form'));
+		axios.delete('/rooms/'+self.room)
+		.then(function(){
+			cc.director.loadScene("menu", function(){
+				console.log("ya");
+			});
+		})
+		
+	},
+	
+	deletePlayer: function(id){
+		
+		
+		
+		
+		var self = this;
+		var tomb= cc.instantiate(self.muerte);
 		self.loadedPlayers = self.loadedPlayers.filter(function( player ) {
-			if(player.id == id){
-				player.destroy();
+			if(player.id==id){
+				
+				tomb.x= player.x;
+				tomb.y= player.y;
+				
+				if(player.id == id){
+					player.destroy();
+				}
 			}
+			
 			return player.id != id;
 		});
+		var scene = cc.director.getScene();
+		scene.addChild(tomb);
+		tomb.active=true;
+		
 	},
 	
 	loadAllPlayers: function(){
@@ -509,9 +558,24 @@ cc.Class({
 							
 							//console.log("ID: "+player.id+", players: "+self.loadedPlayers.length);
 							cc.director.getScene().addChild(plr);
+							if (cont==2){
+								plr.x = self.position.x ;
+								plr.y = self.position.y ;
+							}
+							else if(cont==3){
+								plr.x = self.position.x + (cont*100) ;
+								plr.y = self.position.y;
+							}
+							else if(cont==4){
+								plr.x = self.position.x  ;
+								plr.y = self.position.y - (cont*50);
+							}
+							else{
+								plr.x = self.position.x + (cont*100) ;
+								plr.y = self.position.y + (cont*100);
+							}
 							
-							plr.x = self.position.x;
-							plr.y = self.position.y + (cont*10);
+							
 							plr.id = player.id;
 							
 							cont++;
