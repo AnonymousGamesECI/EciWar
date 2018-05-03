@@ -32,6 +32,10 @@ cc.Class({
 		    default: null,
 		    type: cc.Label,
 		},
+		muerte:{
+			default:null,
+			type: cc.Node,
+		},
 		
     },
 	    onLoad: function () {
@@ -224,14 +228,20 @@ cc.Class({
             if(this.health >= 70){
                 this.health = 100;
             }else{
-                this.health += 30;
+                this.health += 50;
             }
             this.healthBar.progress = this.health/100;
         }else if (other.node.name== "Ammo"){
 			this.ammo+=15;
 			
 			this.ammoBar.string = this.ammo;			
+		}else if (other.node.name=="Death"){
+			this.ammo+=30;
+			this.ammoBar.string = this.ammo;
+			this.health+=40;
+			this.healthBar.progress = this.health/100;
 		}
+		
 		
 		this.node.color= cc.Color.WHITE;
 		
@@ -509,13 +519,29 @@ cc.Class({
 	},
 	
 	deletePlayer: function(id){
+		
+		
+		
+		
 		var self = this;
+		var tomb= cc.instantiate(self.muerte);
 		self.loadedPlayers = self.loadedPlayers.filter(function( player ) {
-			if(player.id == id){
-				player.destroy();
+			if(player.id==id){
+				
+				tomb.x= player.x;
+				tomb.y= player.y;
+				
+				if(player.id == id){
+					player.destroy();
+				}
 			}
+			
 			return player.id != id;
 		});
+		var scene = cc.director.getScene();
+		scene.addChild(tomb);
+		tomb.active=true;
+		
 	},
 	
 	loadAllPlayers: function(){
