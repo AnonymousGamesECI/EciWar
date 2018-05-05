@@ -44,7 +44,7 @@ var menu = cc.Class({
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 3){
-					self.stompClient.send("/app/start." + self.room, {}, null);
+					self.stompClient.send("/app/start/" + self.room, {}, null);
 				}
 				else{
 					cc.director.loadScene("waitingScreen", function(){
@@ -110,7 +110,7 @@ var menu = cc.Class({
 			getStompClient()
 			.then((stpClient) => {
 				self.stompClient = stpClient;
-				subscribeTopic(self.stompClient, "/room." + self.room + "/start", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-start-" + self.room, function(eventBody){
 					console.log(eventBody.body);
 					cc.director.loadScene("game", function(){
 						self.node.active = false;

@@ -304,7 +304,7 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0 ){
-            this.stompClient.send('/app/movement.' + this.room , {}, JSON.stringify( {
+            this.stompClient.send('/app/movement/' + this.room , {}, JSON.stringify( {
 																		id: this.id,
 																		position: this.node.position,
 																		rotation: this.node.rotation
@@ -344,7 +344,7 @@ cc.Class({
 
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();		
-            this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
+            this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
 																					"touchLocY": touchLoc.y,
@@ -368,10 +368,10 @@ cc.Class({
 				axios.get('/rooms/'+self.room+'/players')
 				.then(function(response){
 					if(response.data.length == 1){
-						self.stompClient.send('/app/winner.' + self.room, {}, JSON.stringify({id: idShooter}));
+						self.stompClient.send('/app/winner/' + self.room, {}, JSON.stringify({id: idShooter}));
 					}
 				});
-				self.stompClient.send('/app/newdeath.' + self.room,{}, JSON.stringify({id : idShooter}));  
+				self.stompClient.send('/app/newdeath/' + self.room,{}, JSON.stringify({id : idShooter}));  
 			})
 			.catch(function(error){
 				console.log(error);
@@ -465,7 +465,7 @@ cc.Class({
 		getStompClient()
 			.then((stpClient) => {
 				self.stompClient = stpClient;
-				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-movement-" + self.room, function(eventBody){
 					var move = JSON.parse(eventBody.body);
 				
 					
@@ -480,12 +480,12 @@ cc.Class({
 					);
 					
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/newshot", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-newshot-" + self.room, function(eventBody){
 					var bulletEvent = JSON.parse(eventBody.body);
                     self.addBullet(bulletEvent,self.bullet,self.id);
                     console.log("bullet new shot");
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/newdeath", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-newdeath-" + self.room, function(eventBody){
 					var deathEvent = JSON.parse(eventBody.body);
 					if(deathEvent.id != self.id){
 						self.deletePlayer(deathEvent.id);
@@ -494,7 +494,7 @@ cc.Class({
 						self.die();
 					}			
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/winner", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-winner-" + self.room, function(eventBody){
 					var winnerEvent = JSON.parse(eventBody.body);
 					if(winnerEvent.id != self.id){
 						self.noticeWinner(winnerEvent.id);
