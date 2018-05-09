@@ -46,7 +46,7 @@ var menu = cc.Class({
 		var callback = {
 			onSuccess: function(response){
 				if(response.data.length >= 3){
-					self.stompClient.send("/app/start." + self.room, {}, null);
+					self.stompClient.send("/app/start/" + self.room, {}, null);
 				}
 				else{
 					cc.director.loadScene("waitingScreen", function(){
@@ -68,7 +68,7 @@ var menu = cc.Class({
 				self.beginOrWait();
 			},
 			onFailed: function(error){
-				console.log(error);
+				alert("Room " + self.room + " game has already start ");
 			}
 		};
 		joinRoom(self.id, self.room, callback);
@@ -112,8 +112,8 @@ var menu = cc.Class({
 			getStompClient()
 			.then((stpClient) => {
 				self.stompClient = stpClient;
-				subscribeTopic(self.stompClient, "/room." + self.room + "/start", function(eventBody){
-					console.log(eventBody.body);
+				subscribeTopic(self.stompClient, "/topic/room-start-" + self.room, function(eventBody){
+					//console.log(eventBody.body);
 					cc.director.loadScene("game", function(){
 						self.node.active = false;
 					});

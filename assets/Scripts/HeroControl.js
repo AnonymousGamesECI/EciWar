@@ -116,10 +116,6 @@ cc.Class({
                 case cc.KEY.w:
                 case cc.KEY.up:
                     this.directiony = 1;
-                    /*if (!this.jumping) {
-                        this.jumping = true;
-                        this.speed.y = this.jumpSpeed;
-                    }*/
                     break;
                 case cc.KEY.s:
                 case cc.KEY.down:
@@ -127,7 +123,6 @@ cc.Class({
                     break;
             }
         }
-        //console.log("posx: " + this.node.position);
 
     },
     
@@ -151,7 +146,6 @@ cc.Class({
     onMouseMove: function(event){
         var n = Math.floor(event.getLocationX());
         var m = Math.floor(event.getLocationY());
-        //cc.log("x: " + n + "y: " + m);
         var diff =  {
                     'x' : n - this.node.position.x,
                     'y': m - this.node.position.y
@@ -162,7 +156,6 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-        //console.log(this.healthBar.progress);
 
         if(other.node.name == "Bullet"){
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
@@ -304,7 +297,7 @@ cc.Class({
         }
 
         if(this.speed.y !== 0 || this.speed.x !== 0 ){
-            this.stompClient.send('/app/movement.' + this.room , {}, JSON.stringify( {
+            this.stompClient.send('/app/movement/' + this.room , {}, JSON.stringify( {
 																		id: this.id,
 																		position: this.node.position,
 																		rotation: this.node.rotation
@@ -344,7 +337,7 @@ cc.Class({
 
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();		
-            this.stompClient.send('/app/newshot.' + this.room, {}, JSON.stringify({
+            this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
 																					"touchLocY": touchLoc.y,
@@ -368,10 +361,10 @@ cc.Class({
 				axios.get('/rooms/'+self.room+'/players')
 				.then(function(response){
 					if(response.data.length == 1){
-						self.stompClient.send('/app/winner.' + self.room, {}, JSON.stringify({id: idShooter}));
+						self.stompClient.send('/app/winner/' + self.room, {}, JSON.stringify({id: idShooter}));
 					}
 				});
-				self.stompClient.send('/app/newdeath.' + self.room,{}, JSON.stringify({id : idShooter}));  
+				self.stompClient.send('/app/newdeath/' + self.room,{}, JSON.stringify({id : idShooter}));  
 			})
 			.catch(function(error){
 				console.log(error);
@@ -446,12 +439,6 @@ cc.Class({
     },
 
 
-	
-    registerInServer: function(){
-        
-        //axios.put
-    },
-
     connectAndSubscribe: function(){
 		//PARA PROBARLO LOCALMENTE:
 
@@ -465,7 +452,7 @@ cc.Class({
 		getStompClient()
 			.then((stpClient) => {
 				self.stompClient = stpClient;
-				subscribeTopic(self.stompClient, "/room." + self.room + "/movement", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-movement-" + self.room, function(eventBody){
 					var move = JSON.parse(eventBody.body);
 				
 					
@@ -480,12 +467,12 @@ cc.Class({
 					);
 					
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/newshot", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-newshot-" + self.room, function(eventBody){
 					var bulletEvent = JSON.parse(eventBody.body);
                     self.addBullet(bulletEvent,self.bullet,self.id);
                     console.log("bullet new shot");
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/newdeath", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-newdeath-" + self.room, function(eventBody){
 					var deathEvent = JSON.parse(eventBody.body);
 					if(deathEvent.id != self.id){
 						self.deletePlayer(deathEvent.id);
@@ -494,7 +481,7 @@ cc.Class({
 						self.die();
 					}			
 				});
-				subscribeTopic(self.stompClient, "/room." + self.room + "/winner", function(eventBody){
+				subscribeTopic(self.stompClient, "/topic/room-winner-" + self.room, function(eventBody){
 					var winnerEvent = JSON.parse(eventBody.body);
 					if(winnerEvent.id != self.id){
 						self.noticeWinner(winnerEvent.id);
@@ -555,8 +542,6 @@ cc.Class({
 						if(player.id != self.id){
 							var plr = cc.instantiate(cc.find("p2"));
 							self.loadedPlayers.push(plr);
-							
-							//console.log("ID: "+player.id+", players: "+self.loadedPlayers.length);
 							cc.director.getScene().addChild(plr);
 							if (cont==2){
 								plr.x = self.position.x ;
