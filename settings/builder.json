@@ -3,7 +3,6 @@
   "appSecret": "",
   "encryptJs": true,
   "excludeScenes": [],
-  "fb-instant-games": {},
   "includeAnySDK": false,
   "includeSDKBox": false,
   "inlineSpriteFrames": true,
@@ -21,9 +20,6 @@
   },
   "packageName": "org.cocos2d.EciWar",
   "privateKey": "",
-  "qqplay": {
-    "orientation": "portrait"
-  },
   "renderMode": "0",
   "startScene": "019dd846-c5bb-47ee-9bff-80c92d7bee49",
   "title": "EciWar",

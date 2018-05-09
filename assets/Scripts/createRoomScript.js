@@ -54,7 +54,8 @@ cc.Class({
     buttonClicked: function() {
         var it = cc.instantiate(this.item);
         it.y += this.posY;
-        var st = it.getChildByName("New Button").getChildByName('Label');
+        var st = this.content.getChildren().get(0);
+        console.log(st);
         //this.label.string = "vfdvd";
         //console.log("sdfsdf" + st.string);
         this.content.addChild(it);

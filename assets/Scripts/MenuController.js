@@ -68,7 +68,7 @@ var menu = cc.Class({
 				self.beginOrWait();
 			},
 			onFailed: function(error){
-				alert("Room " + self.room + " game has already start ");
+				alert("Room " + self.room + " game has already started ");
 			}
 		};
 		joinRoom(self.id, self.room, callback);
