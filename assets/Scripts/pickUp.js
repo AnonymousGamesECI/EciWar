@@ -23,20 +23,19 @@ cc.Class({
 			}
 			else{
 				this.counting = false;
+				this.node.getComponent(cc.Sprite).enabled = true;
+				this.node.getComponent(cc.BoxCollider).enabled = true;
 				this.time = 5;
-				//this.node.active = true;
-				//this.node.position.x = this.x;
-				//this.node.position.y = this.y;
 			}
         }
 	},
 
     onCollisionEnter: function (other, self) {
         if(other.node.name != "Bullet"){
-			this.node.destroy();
-            //this.node.position.x = 0;
-			//this.node.position.y = 0;
-			this.counting = true;	
+			//this.node.destroy();
+			this.counting = true;
+			this.node.getComponent(cc.Sprite).enabled = false;
+			this.node.getComponent(cc.BoxCollider).enabled = false;
         }
 
     },
