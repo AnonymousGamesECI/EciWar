@@ -23,7 +23,10 @@ cc.Class({
 
     onCollisionEnter: function (other, self) {
         if (other.node.name != "Kit" && other.node.name != "Ammo"){
+			
             this.node.destroy();
+			
+			
         }
 
     },

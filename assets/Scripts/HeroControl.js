@@ -12,6 +12,7 @@ cc.Class({
         jumpSpeed: 0,
 		health:0,
 		ammo:0,
+		kills:0,
         bullet: {
             default: null,
             type: cc.Node,
@@ -20,6 +21,14 @@ cc.Class({
             default : [],
             type: [cc.Node],
         },
+		killsLabel: {
+			default : null,
+			type: cc.Label,
+		},
+		leftPlayersLabel: {
+			default : null,
+			type: cc.Label,
+		},
         healthBar: {
             default : null,
             type: cc.ProgressBar,
@@ -52,6 +61,8 @@ cc.Class({
 		this.players = null;
         
         this.usernameLabel.string = this.username;
+		
+		this.killsLabel.string = this.kills;
 
         cc.director.getCollisionManager().enabled = true;
         cc.director.getCollisionManager().enabledDebugDraw = false;
@@ -89,6 +100,10 @@ cc.Class({
 		
 		
 		this.loadAllPlayers();
+		
+		
+		
+		
 		
     },
 
@@ -161,6 +176,8 @@ cc.Class({
             //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
 			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
+			
+	
 			
 			
         
@@ -355,7 +372,11 @@ cc.Class({
 		this.health -= 20;
         this.healthBar.progress = this.health/100;
 		var idShooter = other.node.getComponent('Bullet').idBullet;
-		if (this.health<=0){
+		if (this.health==0){
+			console.log(idShooter);
+			console.log("-----------------------------------------------------------");
+			console.log("************************************************************");
+			console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 			axios.put('/rooms/' + this.room + '/players/remove', {id : idShooter})
 			.then(function(){
 				axios.get('/rooms/'+self.room+'/players')
@@ -525,6 +546,7 @@ cc.Class({
 			
 			return player.id != id;
 		});
+		this.leftPlayersLabel.string = this.loadedPlayers.length;
 		var scene = cc.director.getScene();
 		scene.addChild(tomb);
 		tomb.active=true;
@@ -565,6 +587,8 @@ cc.Class({
 							
 							cont++;
 							plr.active = true;
+							
+							self.leftPlayersLabel.string = self.loadedPlayers.length;
 						}
 						
 					}
@@ -574,6 +598,7 @@ cc.Class({
 			onFailed: function(error){
 				console.log(error);
 			}
+			
 		};
 		getRoomPlayers(self.room, callback);
 	},
