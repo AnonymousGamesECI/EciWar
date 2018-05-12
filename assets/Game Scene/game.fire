@@ -2025,7 +2025,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "Label",
+    "_N$string": "0",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Tahoma",
@@ -2064,7 +2064,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117,
+      "width": 27,
       "height": 40
     },
     "_rotationX": 0,
@@ -2099,7 +2099,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "Label",
+    "_N$string": "0",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -2107,7 +2107,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Left",
+    "_name": "left",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -2138,7 +2138,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 98,
+      "width": 22,
       "height": 40
     },
     "_rotationX": 0,
@@ -2426,7 +2426,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "Label",
+    "_N$string": "Nick Name",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Tahoma",
@@ -2465,7 +2465,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 117,
+      "width": 236,
       "height": 40
     },
     "_rotationX": 0,

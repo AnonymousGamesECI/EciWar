@@ -173,7 +173,8 @@ cc.Class({
     onCollisionEnter: function (other, self) {
 
         if(other.node.name == "Bullet"){
-            //console.log("this id: " + this.id + "   bulletId: " + other.node.getComponent('Bullet').idBullet );
+            console.log(other.node.getComponent('Bullet').idBullet);
+			console.log(other.node.getComponent('Bullet').shooter);
 			this.onShootBegan(other);
 			this.node.color = cc.Color.RED;
 			
@@ -373,11 +374,7 @@ cc.Class({
         this.healthBar.progress = this.health/100;
 		var idShooter = other.node.getComponent('Bullet').idBullet;
 		if (this.health==0){
-			console.log(idShooter);
-			console.log("-----------------------------------------------------------");
-			console.log("************************************************************");
-			console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-			axios.put('/rooms/' + this.room + '/players/remove', {id : idShooter})
+			axios.put('/rooms/' + this.room + '/players/remove', {id : self.id})
 			.then(function(){
 				axios.get('/rooms/'+self.room+'/players')
 				.then(function(response){
@@ -385,7 +382,8 @@ cc.Class({
 						self.stompClient.send('/app/winner/' + self.room, {}, JSON.stringify({id: idShooter}));
 					}
 				});
-				self.stompClient.send('/app/newdeath/' + self.room,{}, JSON.stringify({id : idShooter}));  
+				self.stompClient.send('/app/newdeath/' + self.room,{}, JSON.stringify({id : self.id})); 
+				self.stompClient.send('/app/kill/' + self.room, {}, JSON.stringify({id: idShooter}));
 			})
 			.catch(function(error){
 				console.log(error);
@@ -451,7 +449,14 @@ cc.Class({
 
 			bullet.getComponent('Bullet').targetX = numX ;
 			bullet.getComponent('Bullet').targetY = numY;
-			bullet.getComponent('Bullet').idBullet = idd;
+			bullet.getComponent('Bullet').idBullet = bulletEvent.idShooter;
+			
+			console.log(bulletEvent.idShooter);
+			console.log(bulletEvent.idShooter);
+			console.log(bulletEvent.idShooter);
+			console.log(bulletEvent.idShooter);
+			console.log(bulletEvent.idShooter);
+			console.log(bulletEvent.idShooter);
 			
 			scene.addChild(bullet);
 			bullet.active = true;
@@ -504,8 +509,18 @@ cc.Class({
 				});
 				subscribeTopic(self.stompClient, "/topic/room-winner-" + self.room, function(eventBody){
 					var winnerEvent = JSON.parse(eventBody.body);
-					if(winnerEvent.id != self.id){
+					if(winnerEvent.id == self.id){
 						self.noticeWinner(winnerEvent.id);
+					}	
+				});
+				subscribeTopic(self.stompClient, "/topic/room-kill-" + self.room, function(eventBody){
+					var killEvent = JSON.parse(eventBody.body);
+					console.log(killEvent.id);
+					console.log("***************************************************************************************");
+					console.log(self.id);
+					if(killEvent.id == self.id){
+						self.kills ++;
+						self.killsLabel.string = self.kills;
 					}	
 				});
 			});
