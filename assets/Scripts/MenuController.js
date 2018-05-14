@@ -20,6 +20,8 @@ var menu = cc.Class({
 		username: null,
 		room: null,
 		id:null,
+		xPos:null,
+		yPos:null,
 		stompClient:null,
 		player: {
             default: null,
@@ -31,6 +33,8 @@ var menu = cc.Class({
     onLoad: function () {
         cc.game.addPersistRootNode(this.node);
 		this.id = Math.floor(Math.random()*10000000);
+		this.xPos = Math.floor(Math.random()*1000);
+		this.yPos = Math.floor(Math.random()*600);
 				
 	},
 
@@ -71,7 +75,7 @@ var menu = cc.Class({
 				alert("Room " + self.room + " game has already started ");
 			}
 		};
-		joinRoom(self.id, self.room, callback);
+		joinRoom(self.id, self.xPos, self.yPos, self.room, callback);
 	},
 	
 	joinThisRoom: function(){

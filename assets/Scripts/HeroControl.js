@@ -52,6 +52,8 @@ cc.Class({
 		this.room = cc.find("form").getComponent("MenuController").room;
 		this.username = cc.find("form").getComponent("MenuController").username;
 		this.id = cc.find("form").getComponent("MenuController").id;
+		this.node.x = cc.find("form").getComponent("MenuController").xPos;
+		this.node.y = cc.find("form").getComponent("MenuController").yPos;
         this.isDead = false;
         this.health = 100;
 		this.ammo=100;
@@ -68,7 +70,6 @@ cc.Class({
         cc.director.getCollisionManager().enabledDebugDraw = false;
         var canvas = cc.find('Camera');
         canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
-		
 		
 		this.position = this.node.position;
 		this.rotation = this.node.rotation;
@@ -572,7 +573,7 @@ cc.Class({
 		var self = this;
 		var callback = {
 			onSuccess: function(response){
-				//console.log("DATA: "+JSON.stringify(response));
+				console.log(self.position);
 				var cont = 2;
 				response.data.forEach(
 					function(player){
@@ -580,24 +581,9 @@ cc.Class({
 							var plr = cc.instantiate(cc.find("p2"));
 							self.loadedPlayers.push(plr);
 							cc.director.getScene().addChild(plr);
-							if (cont==2){
-								plr.x = self.position.x ;
-								plr.y = self.position.y ;
-							}
-							else if(cont==3){
-								plr.x = self.position.x + (cont*100) ;
-								plr.y = self.position.y;
-							}
-							else if(cont==4){
-								plr.x = self.position.x  ;
-								plr.y = self.position.y - (cont*50);
-							}
-							else{
-								plr.x = self.position.x + (cont*100) ;
-								plr.y = self.position.y + (cont*100);
-							}
-							
-							
+							plr.x = player.x;
+							plr.y = player.y;
+							console.log(player.x + "," + player.y);
 							plr.id = player.id;
 							
 							cont++;
