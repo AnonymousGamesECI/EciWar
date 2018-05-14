@@ -10,23 +10,21 @@ cc.Class({
             default: null,
             type: cc.Node,
         },
+		firingAudio: {
+            default: null,
+            url: cc.AudioClip
+        },
 		damage: 0,
+		
     },
 
-    // use this for initialization
     onLoad: function () {
-        /*this.target.x = x;
-        this.target.y = y;*/
-        //cc.log("X:  " + this.targetX);
-        //cc.log("Y:  " + this.targetY);
+		cc.audioEngine.playEffect(this.firingAudio, false);
     },
 
     onCollisionEnter: function (other, self) {
         if (other.node.name != "Kit" && other.node.name != "Ammo"){
-			
             this.node.destroy();
-			
-			
         }
 
     },
@@ -34,10 +32,8 @@ cc.Class({
     update: function (dt) {
 
         var angle = Math.atan2(this.targetX, this.targetY);
-        //cc.log("allalala:  " + this.targetX);
         this.node.x += this.speed * dt * Math.sin(angle);
         this.node.y += this.speed * dt * Math.cos(angle);
-        //this.node.x += this.speed *
     },
 
 

@@ -26,13 +26,13 @@
         "__id__": 57
       },
       {
-        "__id__": 76
+        "__id__": 77
       },
       {
         "__id__": 73
       },
       {
-        "__id__": 80
+        "__id__": 81
       },
       {
         "__id__": 66
@@ -1769,6 +1769,9 @@
       },
       {
         "__id__": 75
+      },
+      {
+        "__id__": 76
       }
     ],
     "_prefab": null,
@@ -2521,6 +2524,23 @@
     }
   },
   {
+    "__type__": "cc.AudioSource",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 54
+    },
+    "_enabled": true,
+    "_clip": {
+      "__uuid__": "7d4c9581-6f30-4a74-b177-839b823f7cab"
+    },
+    "_volume": 1,
+    "_mute": false,
+    "_loop": false,
+    "playOnLoad": false,
+    "preload": false
+  },
+  {
     "__type__": "cc.Node",
     "_name": "p2",
     "_objFlags": 0,
@@ -2532,13 +2552,13 @@
     "_active": false,
     "_components": [
       {
-        "__id__": 77
-      },
-      {
         "__id__": 78
       },
       {
         "__id__": 79
+      },
+      {
+        "__id__": 80
       }
     ],
     "_prefab": null,
@@ -2583,7 +2603,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 76
+      "__id__": 77
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -2609,7 +2629,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 76
+      "__id__": 77
     },
     "_enabled": true,
     "tag": 0,
@@ -2625,7 +2645,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 76
+      "__id__": 77
     },
     "_enabled": true,
     "id": null
@@ -2639,17 +2659,17 @@
     },
     "_children": [
       {
-        "__id__": 81
+        "__id__": 82
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 83
+        "__id__": 84
       },
       {
-        "__id__": 84
+        "__id__": 85
       }
     ],
     "_prefab": null,
@@ -2694,14 +2714,14 @@
     "_name": "bar",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 80
+      "__id__": 81
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 82
+        "__id__": 83
       }
     ],
     "_prefab": null,
@@ -2746,7 +2766,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 81
+      "__id__": 82
     },
     "_enabled": true,
     "_spriteFrame": null,
@@ -2770,7 +2790,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 80
+      "__id__": 81
     },
     "_enabled": true,
     "_spriteFrame": null,
@@ -2794,12 +2814,12 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 80
+      "__id__": 81
     },
     "_enabled": true,
     "_N$totalLength": 100,
     "_N$barSprite": {
-      "__id__": 82
+      "__id__": 83
     },
     "_N$mode": 0,
     "_N$progress": 0,
