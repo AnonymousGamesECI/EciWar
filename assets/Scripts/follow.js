@@ -15,7 +15,7 @@ cc.Class({
         if (!this.target) {
             return;
         }
-        var follow = cc.follow(this.target, cc.rect(155,0, 2325,1450));
+        var follow = cc.follow(this.target, cc.rect(155,0, 8325,5450));
         this.node.runAction(follow);
     }
 });

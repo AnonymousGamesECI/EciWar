@@ -6,7 +6,7 @@ cc.Class({
     properties: {
         speed: cc.v2(0, 0),
         maxSpeed: cc.v2(400, 400),
-        drag: 1000,
+        drag: 1,
         direction: 0,
         directiony: 0,
         jumpSpeed: 0,
@@ -42,6 +42,10 @@ cc.Class({
 		    type: cc.Label,
 		},
 		muerte:{
+			default:null,
+			type: cc.Node,
+		},
+		p2:{
 			default:null,
 			type: cc.Node,
 		},
@@ -374,7 +378,7 @@ cc.Class({
 		this.health -= 20;
         this.healthBar.progress = this.health/100;
 		var idShooter = other.node.getComponent('Bullet').idBullet;
-		if (this.health==0){
+		if (this.health<=0){
 			axios.put('/rooms/' + this.room + '/players/remove', {id : self.id})
 			.then(function(){
 				axios.get('/rooms/'+self.room+'/players')
@@ -420,8 +424,7 @@ cc.Class({
 			var perX = numX/sumDir;
 			var perY = numY/sumDir;
 			
-
-			var scene = cc.director.getScene();
+   			var scene= cc.director.getScene();
 
 			var bullet = cc.instantiate(bullet);
 			
@@ -453,11 +456,7 @@ cc.Class({
 			bullet.getComponent('Bullet').idBullet = bulletEvent.idShooter;
 			
 			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
+
 			
 			scene.addChild(bullet);
 			bullet.active = true;
@@ -548,7 +547,7 @@ cc.Class({
 		
 		
 		var self = this;
-		var tomb= cc.instantiate(self.muerte);
+		var tomb= cc.instantiate(this.muerte);
 		self.loadedPlayers = self.loadedPlayers.filter(function( player ) {
 			if(player.id==id){
 				
@@ -563,7 +562,7 @@ cc.Class({
 			return player.id != id;
 		});
 		this.leftPlayersLabel.string = this.loadedPlayers.length;
-		var scene = cc.director.getScene();
+		var scene = cc.find("root");
 		scene.addChild(tomb);
 		tomb.active=true;
 		
@@ -578,15 +577,18 @@ cc.Class({
 				response.data.forEach(
 					function(player){
 						if(player.id != self.id){
-							var plr = cc.instantiate(cc.find("p2"));
+							
+							var plr = cc.instantiate(self.p2);
 							self.loadedPlayers.push(plr);
-							cc.director.getScene().addChild(plr);
+							
 							plr.x = player.x;
 							plr.y = player.y;
 							console.log(player.x + "," + player.y);
 							plr.id = player.id;
 							
 							cont++;
+							var scene= cc.find("root");
+							scene.addChild(plr);
 							plr.active = true;
 							
 							self.leftPlayersLabel.string = self.loadedPlayers.length;
