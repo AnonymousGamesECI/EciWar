@@ -410,7 +410,7 @@ cc.Class({
 
     addBulletToScene: function (bulletEvent,bullet, idd) {
 		
-
+			var self = this;
 		
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
