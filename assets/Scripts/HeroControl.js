@@ -44,7 +44,8 @@ cc.Class({
 		muerte:{
 			default:null,
 			type: cc.Node,
-		},
+        },
+        disparo: cc.AudioClip,
 		
     },
 	    onLoad: function () {
@@ -353,7 +354,7 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-
+        cc.audioEngine.playEffect(this.disparo);
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();		
             this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({

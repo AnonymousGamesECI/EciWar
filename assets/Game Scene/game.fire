@@ -75,7 +75,7 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0,
-    "autoReleaseAssets": false
+    "autoReleaseAssets": null
   },
   {
     "__type__": "cc.Node",
@@ -2008,8 +2008,8 @@
     "muerte": {
       "__id__": 50
     },
-    "firingAudio": {
-      "__uuid__": "7d4c9581-6f30-4a74-b177-839b823f7cab"
+    "disparo": {
+      "__uuid__": "db30bc88-ef2f-4f16-a66c-307b5ebccfab"
     }
   },
   {
@@ -2067,7 +2067,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 27,
+      "width": 27.29,
       "height": 40
     },
     "_rotationX": 0,
@@ -2141,7 +2141,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22,
+      "width": 22.25,
       "height": 40
     },
     "_rotationX": 0,
@@ -2394,7 +2394,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 37,
+      "width": 36.89,
       "height": 40
     },
     "_rotationX": 0,
@@ -2468,7 +2468,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 236,
+      "width": 236.33,
       "height": 40
     },
     "_rotationX": 0,

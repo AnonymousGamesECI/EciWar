@@ -26,7 +26,10 @@ var menu = cc.Class({
 		player: {
             default: null,
             type: cc.Node,
-        },
+		},
+		
+		url: cc.AudioClip,
+		soundtrack: cc.AudioClip,
 		
     },
 
@@ -36,6 +39,11 @@ var menu = cc.Class({
 		this.xPos = Math.floor(Math.random()*1000);
 		this.yPos = Math.floor(Math.random()*600);
 				
+	},
+
+	start: function(){
+		cc.audioEngine.play(this.soundtrack);
+
 	},
 
 	EditBoxDidEndEditing: function(sender) {
@@ -107,6 +115,7 @@ var menu = cc.Class({
 	
 	
 	buttonClicked: function() {
+		cc.audioEngine.playEffect(this.url);
 		var self = this;
 	    if(self.username == null || self.username == ""){
             alert("Please enter a username");
