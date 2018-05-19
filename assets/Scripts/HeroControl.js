@@ -49,6 +49,7 @@ cc.Class({
 		
     },
 	    onLoad: function () {
+        cc.audioEngine.stopAll();
         //private variables declaration
 		this.room = cc.find("form").getComponent("MenuController").room;
 		this.username = cc.find("form").getComponent("MenuController").username;

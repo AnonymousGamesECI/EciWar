@@ -46,20 +46,26 @@ cc.Class({
     // onLoad () {},
 
     start () {
-        this.posY = -102
-        this.roomNumber = 2;
+        this.posY = -51;
+        this.roomNumber = 1;
 
     },
 
     buttonClicked: function() {
-        var it = cc.instantiate(this.item);
-        it.y += this.posY;
-        var st = this.content.getChildren().get(0);
-        console.log(st);
-        //this.label.string = "vfdvd";
-        //console.log("sdfsdf" + st.string);
-        this.content.addChild(it);
-        this.posY -=51;
+        if(this.roomNumber < 7){
+            var it = cc.instantiate(this.item);
+            it.y += this.posY;
+            this.roomNumber+=1;
+            it.getComponent(cc.Label).string = "Room #" + this.roomNumber;
+            it.getChildByName("New Button").getComponent(cc.Button).clickEvents[0].customEventData = this.roomNumber;
+            //this.label.string = "vfdvd";
+            //console.log("sdfsdf" + st.string);
+            this.content.addChild(it);
+            this.posY -=51;
+        }else{
+            alert("Maximun room capacity.");
+
+        }
 
 	},
 
