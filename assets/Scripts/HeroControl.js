@@ -356,7 +356,7 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-        alert(getStompClientsSize());
+        //console.log("SIZEEEEEEEEEEEE: " + getStompClientsSize());
         cc.audioEngine.playEffect(this.disparo);
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();		
@@ -403,7 +403,8 @@ cc.Class({
 		var self = this;
 		alert("You have died!");
 		this.isDead = true;
-		this.node.active = false;
+        this.node.active = false;
+        unsubscribe();
 		cc.game.removePersistRootNode(cc.find('form'));
 		cc.director.loadScene("menu", function(){
 			console.log(cc.find('Player'));

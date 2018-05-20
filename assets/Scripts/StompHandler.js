@@ -22,12 +22,14 @@ export function subscribeTopic(stompClient, room, callback) {
 };
 
 export function getStompClientsSize(){
-	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	console.log(clients);
 	return clients.length;
 }
 export function unsubscribe(){
+	
 	for(var cl in clients){
 		cl.unsubscribe();
 	}
+	clients = [];
+	alert("USNUBSCRIBED SUCCESFULLY ---:  " + clients.length);
 }
