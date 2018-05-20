@@ -1,4 +1,4 @@
-import { getStompClient, subscribeTopic } from './StompHandler.js';
+import { getStompClient, subscribeTopic, unsubscribe } from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 var menu = cc.Class({
     extends: cc.Component,
@@ -29,6 +29,7 @@ var menu = cc.Class({
 		},
 		
 		url: cc.AudioClip,
+		url2: cc.AudioClip,
 		soundtrack: cc.AudioClip,
 		
     },
@@ -79,8 +80,10 @@ var menu = cc.Class({
 		var callback = {
 			onSuccess: function(){
 				self.beginOrWait();
+				cc.audioEngine.playEffect(self.url);
 			},
 			onFailed: function(error){
+				cc.audioEngine.playEffect(self.url2);
 				alert("Room " + self.room + " game has already started ");
 			}
 		};
@@ -116,7 +119,7 @@ var menu = cc.Class({
 	
 	
 	buttonClicked: function() {
-		cc.audioEngine.playEffect(this.url);
+		
 		var self = this;
 	    if(self.username == null || self.username == ""){
             alert("Please enter a username");
@@ -127,6 +130,7 @@ var menu = cc.Class({
 			.then((stpClient) => {
 				self.stompClient = stpClient;
 				subscribeTopic(self.stompClient, "/topic/room-start-" + self.room, function(eventBody){
+					
 					//console.log(eventBody.body);
 					cc.director.loadScene("game", function(){
 						self.node.active = false;

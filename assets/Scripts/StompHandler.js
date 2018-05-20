@@ -25,11 +25,13 @@ export function getStompClientsSize(){
 	console.log(clients);
 	return clients.length;
 }
-export function unsubscribe(){
-	
+export function unsubscribeTopic(){
+	/*
 	for(var cl in clients){
+		console.log("ACTIVE CLIENTS-----------------");
+		console.log(cl);
 		cl.unsubscribe();
 	}
-	clients = [];
-	alert("USNUBSCRIBED SUCCESFULLY ---:  " + clients.length);
+	clients = [];*/
+	//alert("USNUBSCRIBED SUCCESFULLY ---:  " + clients.length);
 }

@@ -1,4 +1,4 @@
-import { getStompClient, subscribeTopic, getStompClientsSize, unsubscribe} from './StompHandler.js';
+import { getStompClient, subscribeTopic, getStompClientsSize, unsubscribeTopic} from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
@@ -50,7 +50,8 @@ cc.Class({
 			type: cc.Node,
         },
         disparo: cc.AudioClip,
-		dolor: cc.AudioClip,
+        dolor: cc.AudioClip,
+        noBalas: cc.AudioClip,
 		player:{
 			default:null,
 			type:cc.Node,
@@ -383,8 +384,9 @@ cc.Class({
 
     onTouchBegan: function (event) {
         //console.log("SIZEEEEEEEEEEEE: " + getStompClientsSize());
-        cc.audioEngine.playEffect(this.disparo);
+        
         if(!this.isDead && this.ammo>0){
+            cc.audioEngine.playEffect(this.disparo);
             var touchLoc = event.touch.getLocation();	
 			
 						
@@ -396,6 +398,8 @@ cc.Class({
 																					}));
 			this.ammo-=1;
 			this.ammoBar.string = this.ammo;
+        }else if(this.ammo == 0){
+            cc.audioEngine.playEffect(this.noBalas);
         }
    
 
@@ -437,10 +441,12 @@ cc.Class({
 		alert("You have died!");
 		this.isDead = true;
         this.node.active = false;
-        unsubscribe();
+        //unsubscribe();
 		cc.game.removePersistRootNode(cc.find('form'));
 		cc.director.loadScene("menu", function(){
-			console.log(cc.find('Player'));
+            
+            console.log(cc.find('Player'));
+            
 		});
 	},
 
@@ -536,13 +542,16 @@ cc.Class({
 						self.deletePlayer(deathEvent.id);
 					}
 					else{
-						self.die();
+                        
+                        self.die();
+                        unsubscribeTopic();
 					}			
 				});
 				subscribeTopic(self.stompClient, "/topic/room-winner-" + self.room, function(eventBody){
 					var winnerEvent = JSON.parse(eventBody.body);
 					if(winnerEvent.id == self.id){
-						self.noticeWinner(winnerEvent.id);
+                        self.noticeWinner(winnerEvent.id);
+                        unsubscribeTopic();
 					}	
 				});
 				subscribeTopic(self.stompClient, "/topic/room-kill-" + self.room, function(eventBody){
@@ -567,6 +576,7 @@ cc.Class({
 		axios.delete('/rooms/'+self.room)
 		.then(function(){
 			cc.director.loadScene("menu", function(){
+                
 				console.log("ya");
 			});
 		})
