@@ -5,7 +5,7 @@ export function getStompClient() {
 	return new Promise((resolve) => {
 		var socket = new SockJS("/stompendpoint");
 		var stompClient = Stomp.over(socket);
-		stompClient.connect("tkownfax", "UJ4YP9jVSniRrhGMVLdMev0EOY6EphFa",
+		stompClient.connect("yqbofqdf", "6CMzc5eiNjOdlv9cP9HpqFmHLK3KxUNS",
 			function(frame) {
 				resolve(stompClient);
 			}
@@ -13,7 +13,7 @@ export function getStompClient() {
 			function(error){
 				console.info("error: " + error);
 			}
-			, "tkownfax");
+			, "yqbofqdf");
 	});
 };
 
