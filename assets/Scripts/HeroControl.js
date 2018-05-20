@@ -1,4 +1,4 @@
-import { getStompClient, subscribeTopic} from './StompHandler.js';
+import { getStompClient, subscribeTopic, getStompClientsSize, unsubscribe} from './StompHandler.js';
 import { getRoomPlayers, joinRoom, createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
@@ -78,6 +78,7 @@ cc.Class({
 		this.addBullet = this.addBulletToScene;
 
         this.connectAndSubscribe();
+        
 
         //add keyboard input listener to call turnLeft and turnRight
         cc.eventManager.addListener({
@@ -355,6 +356,7 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
+        alert(getStompClientsSize());
         cc.audioEngine.playEffect(this.disparo);
         if(!this.isDead && this.ammo>0){
             var touchLoc = event.touch.getLocation();		

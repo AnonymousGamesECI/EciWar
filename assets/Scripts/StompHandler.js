@@ -1,3 +1,5 @@
+var clients =[];
+
 export function getStompClient() {
 	//Scalability app CloudAmqp configuration
 	return new Promise((resolve) => {
@@ -16,5 +18,16 @@ export function getStompClient() {
 };
 
 export function subscribeTopic(stompClient, room, callback) {
-	stompClient.subscribe(room, callback);
+	clients.push(stompClient.subscribe(room, callback));
 };
+
+export function getStompClientsSize(){
+	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+	console.log(clients);
+	return clients.length;
+}
+export function unsubscribe(){
+	for(var cl in clients){
+		cl.unsubscribe();
+	}
+}

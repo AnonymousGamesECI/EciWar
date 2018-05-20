@@ -1,13 +1,6 @@
-// Learn cc.Class:
-//  - [Chinese] http://www.cocos.com/docs/creator/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/editors_and_tools/creator-chapters/scripting/class/index.html
-// Learn Attribute:
-//  - [Chinese] http://www.cocos.com/docs/creator/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/editors_and_tools/creator-chapters/scripting/reference/attributes/index.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://www.cocos.com/docs/creator/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/editors_and_tools/creator-chapters/scripting/life-cycle-callbacks/index.html
 
+import { getStompClient, subscribeTopic} from './StompHandler.js';
+import { createRoom } from './RestController.js';
 cc.Class({
     extends: cc.Component,
 
@@ -24,50 +17,102 @@ cc.Class({
                 default:null,
                 type: cc.Node,
             },
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+        
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    onLoad () {
+        this.stompClient = null;
+        this.connectAndSubscribe();
+    },
 
     start () {
         this.posY = -51;
-        this.roomNumber = 1;
+        this.roomNumber = null;
+        var self = this;
+        axios.get("/rooms")
+            .then(function(response){
+                self.roomNumber = response.data;
+                //console.log("ROOMZASOS: " + self.roomNumber);
+                var i;
+                for(i = 0; i < self.roomNumber;i++){
+                    //console.log( "index: " + self.roomNumber);
+                    self.showRoomItem(i+1);
+                }
+            });
+        
+        
 
     },
 
     buttonClicked: function() {
         if(this.roomNumber < 7){
-            var it = cc.instantiate(this.item);
-            it.y += this.posY;
-            this.roomNumber+=1;
-            it.getComponent(cc.Label).string = "Room #" + this.roomNumber;
-            it.getChildByName("New Button").getComponent(cc.Button).clickEvents[0].customEventData = this.roomNumber;
-            //this.label.string = "vfdvd";
-            //console.log("sdfsdf" + st.string);
-            this.content.addChild(it);
-            this.posY -=51;
+            this.createRoomItem();
+            
         }else{
             alert("Maximun room capacity.");
 
         }
+        
 
-	},
+    },
+
+    createRoomItem: function(){
+            //this.roomNumber+=1;
+            var self = this;
+            var callback = {
+                onSuccess: function(){
+                    console.log("ROOMMMMMMM--"+ (self.roomNumber + 1) +"--CREATED SUCCESFULLY");
+                    self.stompClient.send('/topic/menu-newroom', {}, JSON.stringify({}));
+                },
+                onFailed: function(error){
+                    alert("An error has ocurred creating the room " + (self.roomNumber+1))
+                    console.log(error);
+                }
+            };
+            createRoom((this.roomNumber+1), callback);
+        
+    },
+
+    showRoomItem: function(num){
+        
+        var it = cc.instantiate(this.item);
+        it.y += this.posY;
+        
+        it.getComponent(cc.Label).string = "Room #" + num;
+        it.getChildByName("New Button").getComponent(cc.Button).clickEvents[0].customEventData = num;
+        //this.label.string = "vfdvd";
+        //console.log("sdfsdf" + st.string);
+        this.content.addChild(it);
+        this.posY -=51;
+    
+},
+    
+    connectAndSubscribe: function(){
+		//PARA PROBARLO LOCALMENTE:
+
+        //var socket = new SockJS('http://localhost:8080//stompendpoint');
+        
+		//PARA CONSTRUIRLO 
+		//socket = new SockJS('/stompendpoint');
+		
+		var self = this;
+		
+		getStompClient()
+			.then((stpClient) => {
+				self.stompClient = stpClient;
+				subscribeTopic(self.stompClient, "/topic/menu-newroom" , function(eventBody){
+                    self.roomNumber +=1;
+                    //var move = JSON.parse(eventBody.body);
+                    self.showRoomItem(self.roomNumber);
+					
+				});
+                
+                
+			});
+
+    },
 
     // update (dt) {},
 });
