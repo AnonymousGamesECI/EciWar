@@ -31,7 +31,6 @@ cc.Class({
 				
 				cc.find("root").position= cc.p({x:this.rooty.position.x, y: this.rooty.position.y-360});	
 				other.node.position = cc.p({x:other.node.position.x, y: 360});
-				other.position = cc.p({x:other.node.position.x, y: 0});
 				other.getComponent('HeroControl').multiY+=1;
 				
 			}
