@@ -11,7 +11,7 @@ cc.Class({
 
     onLoad: function () {
 		this.x = this.node.position.x;
-		this.y = this.node.position.y
+		this.y = this.node.position.y;
 		this.counting = false;
         this.repeat = false;
     },
@@ -31,7 +31,7 @@ cc.Class({
 	},
 
     onCollisionEnter: function (other, self) {
-        if(other.node.name != "Bullet"){
+        if(other.node.name=="Player"){
 			//this.node.destroy();
 			this.counting = true;
 			this.node.getComponent(cc.Sprite).enabled = false;

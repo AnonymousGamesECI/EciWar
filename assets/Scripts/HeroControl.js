@@ -45,66 +45,86 @@ cc.Class({
 			default:null,
 			type: cc.Node,
         },
+		enemy:{
+			default:null,
+			type: cc.Node,
+        },
         disparo: cc.AudioClip,
+		dolor: cc.AudioClip,
+		player:{
+			default:null,
+			type:cc.Node,
+		},
+		pain:{
+			default:null,
+			type:cc.Node,
+		},
+		realPosition:cc.p({x:0, y:0}),
+		multiX:0,
+		multiY:0,
 		
     },
 	    onLoad: function () {
-        //private variables declaration
-		this.room = cc.find("form").getComponent("MenuController").room;
-		this.username = cc.find("form").getComponent("MenuController").username;
-		this.id = cc.find("form").getComponent("MenuController").id;
-		this.node.x = cc.find("form").getComponent("MenuController").xPos;
-		this.node.y = cc.find("form").getComponent("MenuController").yPos;
-        this.isDead = false;
-        this.health = 100;
-		this.ammo=100;
-        this.stompClient = null;
-        this.pi = 3.141516;
-		
-		this.players = null;
-        
-        this.usernameLabel.string = this.username;
-		
-		this.killsLabel.string = this.kills;
+			//private variables declaration
+			this.room = cc.find("form").getComponent("MenuController").room;
+			this.username = cc.find("form").getComponent("MenuController").username;
+			this.id = cc.find("form").getComponent("MenuController").id;
+			var canvas = cc.find("Camera");
+			this.node.position=cc.p({x:640, y:360});
+			this.realPosition=cc.p({x:640, y:360});
+			this.position = cc.p({x:0, y:0});
+			this.player.rotation = this.node.rotation;
+			/*this.node.x = cc.find("form").getComponent("MenuController").xPos;
+			this.node.y = cc.find("form").getComponent("MenuController").yPos;*/
+			this.isDead = false;
+			this.health = 100;
+			this.ammo=100;
+			this.stompClient = null;
+			this.pi = 3.141516;
+			
+			this.players = null;
+			
+			this.usernameLabel.string = this.username;
+			
+			this.killsLabel.string = this.kills;
 
-        cc.director.getCollisionManager().enabled = true;
-        cc.director.getCollisionManager().enabledDebugDraw = false;
-        var canvas = cc.find('Camera');
-        canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
-		
-		this.position = this.node.position;
-		this.rotation = this.node.rotation;
-		this.addBullet = this.addBulletToScene;
+			cc.director.getCollisionManager().enabled = true;
+			cc.director.getCollisionManager().enabledDebugDraw = false;
+			
+			canvas.on(cc.Node.EventType.TOUCH_START, this.onTouchBegan, this);
+			
+			
+			this.addBullet = this.addBulletToScene;
 
-        this.connectAndSubscribe();
+			this.connectAndSubscribe();
 
-        //add keyboard input listener to call turnLeft and turnRight
-        cc.eventManager.addListener({
-            event: cc.EventListener.KEYBOARD,
-            onKeyPressed: this.onKeyPressed.bind(this),
-            onKeyReleased: this.onKeyReleased.bind(this),
-        }, this.node);
-        cc.eventManager.addListener({
-            event: cc.EventListener.MOUSE,
-            onMouseMove: this.onMouseMove.bind(this),
-        }, this.node);
+			//add keyboard input listener to call turnLeft and turnRight
+			cc.eventManager.addListener({
+				event: cc.EventListener.KEYBOARD,
+				onKeyPressed: this.onKeyPressed.bind(this),
+				onKeyReleased: this.onKeyReleased.bind(this),
+			}, this.node);
+			cc.eventManager.addListener({
+				event: cc.EventListener.MOUSE,
+				onMouseMove: this.onMouseMove.bind(this),
+			}, this.node);
 
 
-        this.collisionX = 0;
-        this.collisionY = 0;
+			this.collisionX = 0;
+			this.collisionY = 0;
 
-        this.prePosition = cc.v2();
-        this.preStep = cc.v2();
+			this.prePosition = cc.v2();
+			this.preStep = cc.v2();
 
-        this.touchingNumber = 0;
-		
-		
-		
-		
-		this.loadAllPlayers();
-		
-		
-		
+			this.touchingNumber = 0;
+			
+			
+			
+			
+			this.loadAllPlayers();
+			
+			
+			
 		
 		
     },
@@ -173,7 +193,7 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-
+		
         if(other.node.name == "Bullet"){
             console.log(other.node.getComponent('Bullet').idBullet);
 			console.log(other.node.getComponent('Bullet').shooter);
@@ -184,8 +204,10 @@ cc.Class({
 			
 			
         
-        }else if(other.node.name == "Wall" || other.node.name == "p2"){
-            //this.healthBar.getComponent("ProgressBar").progress;
+        }else if(other.node.name == "Wall" || other.node.name == "p2"|| other.node.name == "CameraZone"){
+            
+			
+			//this.healthBar.getComponent("ProgressBar").progress;
             this.touchingNumber ++;
 
             // 1st step
@@ -316,13 +338,7 @@ cc.Class({
             }
         }
 
-        if(this.speed.y !== 0 || this.speed.x !== 0 ){
-            this.stompClient.send('/app/movement/' + this.room , {}, JSON.stringify( {
-																		id: this.id,
-																		position: this.node.position,
-																		rotation: this.node.rotation
-																	}));
-        }
+        
 
         if(this.collisionY < 0){
             if(this.speed.y>0){
@@ -347,8 +363,16 @@ cc.Class({
         }else{
             this.node.x += this.speed.x * dt;
         }
-
-
+		var n1 = this.node.position.x+(640*this.multiX);
+		var n2 = this.node.position.y+(360*this.multiY);
+		this.realPosition=cc.p({x:n1, y:n2});
+		if(this.speed.y !== 0 || this.speed.x !== 0 ){
+            this.stompClient.send('/app/movement/' + this.room , {}, JSON.stringify( {
+																		id: this.id,
+																		position: this.realPosition,
+																		rotation: this.node.rotation
+																	}));
+        }
     },
 
 
@@ -356,12 +380,14 @@ cc.Class({
     onTouchBegan: function (event) {
         cc.audioEngine.playEffect(this.disparo);
         if(!this.isDead && this.ammo>0){
-            var touchLoc = event.touch.getLocation();		
+            var touchLoc = event.touch.getLocation();	
+			
+						
             this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
 																					"touchLocX": touchLoc.x,
 																					"touchLocY": touchLoc.y,
-																					"position": this.node.position
+																					"position": this.realPosition
 																					}));
 			this.ammo-=1;
 			this.ammoBar.string = this.ammo;
@@ -374,7 +400,12 @@ cc.Class({
 		var self = this;
 		this.health -= 20;
         this.healthBar.progress = this.health/100;
+		var pain = cc.instantiate(this.pain);
+		cc.director.getScene().addChild(pain);
+		//cc.audioEngine.playEffect(this.dolor);
+		pain.active=true;
 		var idShooter = other.node.getComponent('Bullet').idBullet;
+		
 		if (this.health==0){
 			axios.put('/rooms/' + this.room + '/players/remove', {id : self.id})
 			.then(function(){
@@ -424,12 +455,11 @@ cc.Class({
 
 			var scene = cc.director.getScene();
 
-			var bullet = cc.instantiate(bullet);
+			var bullet = cc.instantiate(this.bullet);
 			
 			bullet.x= bulletEvent.position.x + (radio*perX);
 			bullet.y= bulletEvent.position.y + (radio*perY);
-			
-/*
+			/*
 			if (numX>=0 && numY>=0){
 				bullet.x= bulletEvent.position.x + (radio*perX);
 				bullet.y= bulletEvent.position.y + (radio*perY);
@@ -445,20 +475,14 @@ cc.Class({
 			else if(numX<0 && numY<0){
 				bullet.x= bulletEvent.position.x - (radio*perX);
 				bullet.y= bulletEvent.position.y - (radio*perY);
-			}
+			}*/
 			
-			*/
+			
 
-			bullet.getComponent('Bullet').targetX = numX ;
+			bullet.getComponent('Bullet').targetX = numX;
 			bullet.getComponent('Bullet').targetY = numY;
 			bullet.getComponent('Bullet').idBullet = bulletEvent.idShooter;
 			
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
-			console.log(bulletEvent.idShooter);
 			
 			scene.addChild(bullet);
 			bullet.active = true;
@@ -549,7 +573,7 @@ cc.Class({
 		
 		
 		var self = this;
-		var tomb= cc.instantiate(self.muerte);
+		var tomb= cc.instantiate(this.muerte);
 		self.loadedPlayers = self.loadedPlayers.filter(function( player ) {
 			if(player.id==id){
 				
@@ -564,7 +588,7 @@ cc.Class({
 			return player.id != id;
 		});
 		this.leftPlayersLabel.string = this.loadedPlayers.length;
-		var scene = cc.director.getScene();
+		var scene = cc.find("root");
 		scene.addChild(tomb);
 		tomb.active=true;
 		
@@ -579,15 +603,18 @@ cc.Class({
 				response.data.forEach(
 					function(player){
 						if(player.id != self.id){
-							var plr = cc.instantiate(cc.find("p2"));
+							
+							var plr = cc.instantiate(self.enemy);
 							self.loadedPlayers.push(plr);
-							cc.director.getScene().addChild(plr);
+							
 							plr.x = player.x;
 							plr.y = player.y;
 							console.log(player.x + "," + player.y);
 							plr.id = player.id;
 							
 							cont++;
+							var scene= cc.find("root");
+							scene.addChild(plr);
 							plr.active = true;
 							
 							self.leftPlayersLabel.string = self.loadedPlayers.length;
@@ -604,6 +631,7 @@ cc.Class({
 		};
 		getRoomPlayers(self.room, callback);
 	},
+	
 	
 
 

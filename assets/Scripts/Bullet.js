@@ -2,7 +2,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        speed: 2000,
+        speed: 3000,
         targetX: 0,
         targetY: 0,
         idBullet: 0,
@@ -23,7 +23,7 @@ cc.Class({
     },
 
     onCollisionEnter: function (other, self) {
-        if (other.node.name != "Kit" && other.node.name != "Ammo"){
+        if (other.node.name != "Kit" && other.node.name != "Ammo" && other.node.name!= "CameraZone"){
             this.node.destroy();
         }
 
