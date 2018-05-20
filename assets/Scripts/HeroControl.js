@@ -381,9 +381,39 @@ cc.Class({
 
 
     onTouchBegan: function (event) {
-        cc.audioEngine.playEffect(this.disparo);
+        
         if(!this.isDead && this.ammo>0){
+			cc.audioEngine.playEffect(this.disparo);
             var touchLoc = event.touch.getLocation();	
+			
+			
+			var self = this;
+			
+			var numX = touchLoc.X - this.node.position.x;
+			var numY = touchLoc.Y - this.node.position.y;
+			var radio = 98;
+			var sumDir = Math.abs(numX) + Math.abs(numY);
+			
+			var perX = numX/sumDir;
+			var perY = numY/sumDir;
+			
+
+			var scene = cc.find("root");
+
+			var bullet = cc.instantiate(this.bullet);
+			
+			bullet.x= this.node.position.x + (radio*perX);
+			bullet.y= this.node.position.y + (radio*perY);
+			bullet.getComponent('Bullet').targetX = numX;
+			bullet.getComponent('Bullet').targetY = numY;
+			bullet.getComponent('Bullet').idBullet = this.id;
+
+			scene.addChild(bullet);
+			bullet.active = true;
+			
+			
+			
+			
 			
 						
             this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({
@@ -442,26 +472,34 @@ cc.Class({
 	},
 
 
-
+	shoot: function(bulletEvent,bullet){
+			
+	},
     addBulletToScene: function (bulletEvent,bullet, idd) {
-		
+			
 			var self = this;
-		
+			
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
-			var radio = 110;
+			var radio = 98;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
 			var perX = numX/sumDir;
 			var perY = numY/sumDir;
 			
 
-			var scene = cc.director.getScene();
+			var scene = cc.find("root");
 
 			var bullet = cc.instantiate(this.bullet);
 			
-			bullet.x= bulletEvent.position.x + (radio*perX);
-			bullet.y= bulletEvent.position.y + (radio*perY);
+			/*if (bulletEvent.id==this.id){
+				bullet.x= this.node.position.x+ (radio*perX);
+				bullet.y= this.node.position.y + (radio*perY);
+			}
+			else{*/
+				bullet.x= bulletEvent.position.x + (radio*perX);
+				bullet.y= bulletEvent.position.y + (radio*perY);
+			//}
 			/*
 			if (numX>=0 && numY>=0){
 				bullet.x= bulletEvent.position.x + (radio*perX);
@@ -524,9 +562,16 @@ cc.Class({
 				});
 				subscribeTopic(self.stompClient, "/topic/room-newshot-" + self.room, function(eventBody){
 					var bulletEvent = JSON.parse(eventBody.body);
-                    self.addBullet(bulletEvent,self.bullet,self.id);
-                    console.log("bullet new shot");
+					
+					if(bulletEvent.id != self.id){
+						self.addBullet(bulletEvent,self.bullet,self.id);
+						console.log("bullet new shot");
+					}
+					
+                    
+                    
 				});
+				
 				subscribeTopic(self.stompClient, "/topic/room-newdeath-" + self.room, function(eventBody){
 					var deathEvent = JSON.parse(eventBody.body);
 					if(deathEvent.id != self.id){
