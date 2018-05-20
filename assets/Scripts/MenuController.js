@@ -42,6 +42,7 @@ var menu = cc.Class({
 	},
 
 	start: function(){
+		//cc.audioEngine.stopAll();
 		cc.audioEngine.play(this.soundtrack);
 
 	},

@@ -65,6 +65,8 @@ cc.Class({
 		
     },
 	    onLoad: function () {
+
+			cc.audioEngine.stopAll();
 			//private variables declaration
 			this.room = cc.find("form").getComponent("MenuController").room;
 			this.username = cc.find("form").getComponent("MenuController").username;
@@ -87,7 +89,8 @@ cc.Class({
 			this.usernameLabel.string = this.username;
 			
 			this.killsLabel.string = this.kills;
-
+       
+ 
 			cc.director.getCollisionManager().enabled = true;
 			cc.director.getCollisionManager().enabledDebugDraw = false;
 			
