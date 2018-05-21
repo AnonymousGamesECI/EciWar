@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "6929ae7a-e412-4e03-8654-e01c6e5ab87f",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "250px-Hortus_Deliciarum_-_Hell": {
+      "ver": "1.0.3",
+      "uuid": "5e284047-f836-4c2a-b6f3-fac8e61d3c4d",
+      "rawTextureUuid": "6929ae7a-e412-4e03-8654-e01c6e5ab87f",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1600,
+      "height": 1200,
+      "rawWidth": 1600,
+      "rawHeight": 1200,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
