@@ -420,8 +420,8 @@ cc.Class({
 						
             this.stompClient.send('/app/newshot/' + this.room, {}, JSON.stringify({
 																					idShooter: this.id,
-																					"touchLocX": touchLoc.x,
-																					"touchLocY": touchLoc.y,
+																					"touchLocX": touchLoc.x+(640*this.multiX),
+																					"touchLocY": touchLoc.y+(360*this.multiY),
 																					"position": this.realPosition
 																					}));
 			this.ammo-=1;
@@ -497,13 +497,9 @@ cc.Class({
 
 			var bullet = cc.instantiate(this.bullet);
 			
-			/*if (bulletEvent.id==this.id){
-				bullet.x= this.node.position.x+ (radio*perX);
-				bullet.y= this.node.position.y + (radio*perY);
-			}
-			else{*/
-				bullet.x= bulletEvent.position.x + (radio*perX);
-				bullet.y= bulletEvent.position.y + (radio*perY);
+			
+			bullet.x= bulletEvent.position.x + (radio*perX);
+			bullet.y= bulletEvent.position.y + (radio*perY);
 			//}
 			/*
 			if (numX>=0 && numY>=0){
