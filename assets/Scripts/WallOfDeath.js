@@ -7,9 +7,33 @@ cc.Class({
             default: 10
         },
 		onMovement:false,
-		lado:{
-			default:0,
-			type: cc.Integer,
+		m1:{
+			default:null,
+			type: cc.Node,
+		},
+		m2:{
+			default:null,
+			type: cc.Node,
+		},
+		m3:{
+			default:null,
+			type: cc.Node,
+		},
+		m4:{
+			default:null,
+			type: cc.Node,
+		},
+		m4:{
+			default:null,
+			type: cc.Node,
+		},
+		m5:{
+			default:null,
+			type: cc.Node,
+		},
+		m6:{
+			default:null,
+			type: cc.Node,
 		},
 		avance:0,
     },
@@ -35,28 +59,21 @@ cc.Class({
 			}
         }
 		if (this.onMovement){
-			if(this.lado==1 ){
-				if(this.avance<300){
-					this.x+=5;
-					this.avance+=5;
-				}
-				else{
-					this.onMovement=false;
-					this.avance=0;
-				}
+			
+			if(this.avance<400){
+				this.m1.position.x+=5;
+				this.m2.position.x+=5;
+				this.m3.position.x+=5;
+				this.m4.position.x-=5;
+				this.m5.position.x-=5;
+				this.m6.position.x-=5;
+				this.avance+=5;
 			}
 			else{
-				if(this.avance<300){
-					this.x-=5;
-					this.avance+=5;
-				}
-				else{
-					this.onMovement=false;
-					this.avance=0;
-				}
+				this.onMovement=false;
+				this.avance=0;
+				this.node.destroy();
 			}
-				
-				
 		}
 	},
 
