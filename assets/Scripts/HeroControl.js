@@ -391,8 +391,8 @@ cc.Class({
 			
 			var self = this;
 			
-			var numX = touchLoc.X - this.node.position.x;
-			var numY = touchLoc.Y - this.node.position.y;
+			var numX = touchLoc.X+(640*this.multiX)- this.realPosition.x;
+			var numY = touchLoc.Y+(360*this.multiY) - this.realPosition.y;
 			var radio = 98;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
@@ -479,9 +479,7 @@ cc.Class({
 	},
 
 
-	shoot: function(bulletEvent,bullet){
-			
-	},
+
     addBulletToScene: function (bulletEvent,bullet, idd) {
 			
 			var self = this;
