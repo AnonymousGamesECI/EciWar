@@ -392,7 +392,7 @@ cc.Class({
 			var self = this;
 			
 			var numX = touchLoc.X+(640*this.multiX)- this.realPosition.x;
-			var numY = touchLoc.Y+(360*this.multiY) - this.realPosition.y;
+			var numY = touchLoc.Y-(360*this.multiY) - this.realPosition.y;
 			var radio = 98;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
@@ -687,6 +687,29 @@ cc.Class({
 			
 		};
 		getRoomPlayers(self.room, callback);
+	},
+	
+	onWallOfDeath: function(){
+		var self = this;
+		this.health = 0;
+        this.healthBar.progress = 0;
+		var pain = cc.instantiate(this.pain);
+		cc.director.getScene().addChild(pain);
+		//cc.audioEngine.playEffect(this.dolor);
+		pain.active=true;
+		
+		
+		
+		axios.put('/rooms/' + this.room + '/players/remove', {id : self.id})
+		.then(function(){
+			self.stompClient.send('/app/newdeath/' + self.room,{}, JSON.stringify({id : self.id})); 
+		})
+		.catch(function(error){
+			console.log(error);
+		});			 
+		
+		
+		
 	},
 	
 	
