@@ -486,7 +486,7 @@ cc.Class({
 			
 			var numX = bulletEvent.touchLocX - bulletEvent.position.x;
 			var numY = bulletEvent.touchLocY - bulletEvent.position.y;
-			var radio = 85;
+			var radio = 60;
 			var sumDir = Math.abs(numX) + Math.abs(numY);
 			
 			var perX = numX/sumDir;
