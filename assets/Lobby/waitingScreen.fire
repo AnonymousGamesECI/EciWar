@@ -51,7 +51,7 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0,
-    "autoReleaseAssets": null
+    "autoReleaseAssets": false
   },
   {
     "__type__": "cc.Node",
@@ -236,17 +236,17 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 489.8,
+      "width": 305,
       "height": 40
     },
     "_rotationX": 0,
     "_rotationY": 0,
-    "_scaleX": 1,
-    "_scaleY": 1,
+    "_scaleX": 1.91,
+    "_scaleY": 1.91,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 285,
-      "y": 669
+      "x": 349,
+      "y": 640
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -268,10 +268,12 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "6dac8dc8-d09f-4bf3-9fce-ca3c7b6594ff"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$string": "Wating for 2 more players...",
+    "_N$string": "Wating for more players...",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -304,9 +306,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 255,
-      "g": 98,
-      "b": 98,
+      "r": 197,
+      "g": 197,
+      "b": 88,
       "a": 255
     },
     "_cascadeOpacityEnabled": true,
@@ -378,7 +380,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": -2,
       "y": 0
     },
     "_skewX": 0,
@@ -401,8 +403,10 @@
     "_fontSize": 20,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "39c8a47e-c63c-48a6-b8ab-40ac34f721b5"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_N$string": "Cancel",
     "_N$horizontalAlign": 1,

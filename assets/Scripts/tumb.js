@@ -8,8 +8,8 @@ cc.Class({
 
 
 
-    onCollisionEnter: function (other, self) {
-        if(other.node.name != "Bullet"){
+    onCollisionEnter: function (other) {
+        if(other.node.name == "Player"){
 			this.node.destroy();
         }
 

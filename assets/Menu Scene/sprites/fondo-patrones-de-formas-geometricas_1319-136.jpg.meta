@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "35edcbd8-2e91-4c55-ace8-11b3302c28a5",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "fondo-patrones-de-formas-geometricas_1319-136": {
+      "ver": "1.0.3",
+      "uuid": "4884ff57-28d2-4da2-9e73-7d9fb43a1f78",
+      "rawTextureUuid": "35edcbd8-2e91-4c55-ace8-11b3302c28a5",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 626,
+      "height": 626,
+      "rawWidth": 626,
+      "rawHeight": 626,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
